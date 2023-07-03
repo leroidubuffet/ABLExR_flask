@@ -1,11 +1,4 @@
-from flask import Flask
-
-
-import gspread
-import pandas as pd
-import datetime
-
-credentials = {
+{
   "type": "service_account",
   "project_id": "tidy-gravity-349514",
   "private_key_id": "2d2d47fb47ddfb4ec6c2fa7beacdd8fe785f998e",
@@ -17,33 +10,3 @@ credentials = {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/eys-445%40tidy-gravity-349514.iam.gserviceaccount.com"
 }
-
-gc = gspread.service_account_from_dict(credentials)
-gs = gc.open("ABLExR-DATA")
-wk = gs.get_worksheet(0)
-
-def get_data():
-    return pd.DataFrame(wk.get_all_records())
-
-def add_record(sesionId, reactionTime):
-    ethnicity = int(sesionId / 1000)
-    id = sesionId % 1000
-    now = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
-    record = [id,ethnicity,reactionTime, now]
-    df.loc[len(df)] = record
-    wk.update([df.columns.values.tolist()] + df.values.tolist())
-
-df = get_data()
-
-
-app = Flask(__name__)
-
-@app.route("/")
-def index():
-    return "Hello ABLExR!"
-
-
-@app.route("/case3/<sesionId>/<reactionTime>")
-def reaction(sesionId, reactionTime):
-    add_record(int(sesionId), int(reactionTime))
-    return "OK"
