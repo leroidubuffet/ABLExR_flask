@@ -116,3 +116,8 @@ webencodings==0.5.1
 websocket-client==1.6.1
 Werkzeug==2.3.6
 widgetsnbextension==4.0.7
+wrapt==1.13.3
+xxhash==2.0.2
+yarl==1.7.2
+zope.event==5.0
+zope.interface==6.0
