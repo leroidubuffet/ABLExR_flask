@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Experience Menu</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Choose the type of experience</h1>
+        <button onclick="location.href='/waiting_room'">Video</button>
+        <button onclick="location.href='/ar_vr?experience=ar'">Augmented Reality</button>
+        <button onclick="location.href='/ar_vr?experience=vr'">Virtual Reality</button>
+    </div>
+</body>
+</html>

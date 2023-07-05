@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Feedback</h1>
+        <form action="{{ url_for('feedback') }}" method="post">
+            <label for="feedback">Why have you intervened at that particular point?</label><br>
+            <textarea id="feedback" name="feedback" rows="4" cols="50"></textarea><br>
+            <input type="submit" value="Submit">
+        </form>
+		<div class="message">
+            {{ message }}
+        </div>
+    </div>
+</body>
+</html>

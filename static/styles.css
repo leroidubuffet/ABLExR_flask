@@ -1,0 +1,58 @@
+:root {
+	--top-margin: 30vh; /* Adjust the value to set the desired relative margin */
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	height: 100vh;
+	font-family: Arial, sans-serif;
+	min-width: 1000px;
+	margin-top: var(--top-margin);
+}
+
+.container {
+	text-align: center;
+}
+
+h1 {
+	margin-bottom: 20px;
+}
+
+h2 {
+	margin-bottom: 20px;
+	font-weight: 200;
+}
+
+p.error {
+	color: red;
+}
+
+form {
+	margin-top: 20px;
+}
+
+input {
+	padding: 10px;
+}
+
+button {
+	margin-top: 10px;
+	padding: 10px 20px;
+}
+
+select {
+	padding: 10px 20px;
+}
+
+.dropdown-container {
+	position: fixed;
+	top: 0;
+	left: 10%;
+	width: 100%;
+	background-color: #f8f9fa;
+	padding: 10px;
+	z-index: 1;
+}

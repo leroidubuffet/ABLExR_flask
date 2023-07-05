@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div id="player"></div>
+		<br>
+		<button id="intervene-button" onclick="saveResponsetime()">Intervene</button>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
