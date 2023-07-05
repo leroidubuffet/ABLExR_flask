@@ -38,25 +38,25 @@ wk_s = gs.get_worksheet(1) # session spreadsheet
 wk_f = gs.get_worksheet(2) # feedback spreadsheet
 
 def get_rt_data():
-    records = wk_rt.get_all_records()
-    if records:
-        return pd.DataFrame(records)
-    else:
-        return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
+	records = wk_rt.get_all_records()
+	if records:
+		return pd.DataFrame(records)
+	else:
+		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
 
 def get_s_data():
-    records = wk_s.get_all_records()
-    if records:
-        return pd.DataFrame(records)
-    else:
-        return pd.DataFrame(columns=['session_id', 'ethnicity', 'description'])
+	records = wk_s.get_all_records()
+	if records:
+		return pd.DataFrame(records)
+	else:
+		return pd.DataFrame(columns=['session_id', 'ethnicity', 'description'])
 
 def get_f_data():
-    records = wk_f.get_all_records()
-    if records:
-        return pd.DataFrame(records)
-    else:
-        return pd.DataFrame(columns=['session_id', 'ethnicity', 'feedback'])
+	records = wk_f.get_all_records()
+	if records:
+		return pd.DataFrame(records)
+	else:
+		return pd.DataFrame(columns=['session_id', 'ethnicity', 'feedback'])
 
 df_rt = get_rt_data()
 df_s = get_s_data()
@@ -81,15 +81,15 @@ def add_session(session_id, session_description):
 	wk_s.append_row(record, value_input_option='USER_ENTERED')
 
 def add_feedback(session_id, feedback):
-    try:
-        session_id = str(session_id)  # Convert session_id to string
-        ethnicity = int(session_id[0])
-        id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
-        record = [id, ethnicity, feedback]
-        df_f.loc[len(df_f)] = record
-        wk_f.update([df_f.columns.values.tolist()] + df_f.values.tolist())
-    except Exception as e:
-        app.logger.error('Error when adding feedback: %s', e)
+	try:
+		session_id = str(session_id)  # Convert session_id to string
+		ethnicity = int(session_id[0])
+		id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
+		record = [id, ethnicity, feedback]
+		df_f.loc[len(df_f)] = record
+		wk_f.update([df_f.columns.values.tolist()] + df_f.values.tolist())
+	except Exception as e:
+		app.logger.error('Error when adding feedback: %s', e)
 
 
 
@@ -192,99 +192,99 @@ def analyze_session():
 
 @app.route('/analysis', methods=['GET', 'POST'])
 def render_seaborn_chart():
-    # Generate your Seaborn chart here
-    # Specify the dimension you want to replace
-    if request.method == 'POST':
-        dimension = request.form['dimension']
-    else:
-        dimension = 'Anger'
-        
-    # Load data from csv
-    officer_df = pd.read_csv('datasets/OF_language.csv')
-    driver_df = pd.read_csv('datasets/DF_language.csv')
-    scene_df = pd.read_csv('datasets/O+D_F_language.csv')
+	# Generate your Seaborn chart here
+	# Specify the dimension you want to replace
+	if request.method == 'POST':
+		dimension = request.form['dimension']
+	else:
+		dimension = 'Anger'
+		
+	# Load data from csv
+	officer_df = pd.read_csv('datasets/OF_language.csv')
+	driver_df = pd.read_csv('datasets/DF_language.csv')
+	scene_df = pd.read_csv('datasets/O+D_F_language.csv')
 
-    # Load the data from the Google Spreadsheet
-    df_rt = get_rt_data()
+	# Load the data from the Google Spreadsheet
+	df_rt = get_rt_data()
 
-    # Convert the 'Session_ID' and 'Ethnicity' columns to integer
-    df_rt['Session_ID'] = df_rt['Session_ID'].astype(int)
-    df_rt['Ethnicity'] = df_rt['Ethnicity'].astype(int)
+	# Convert the 'Session_ID' and 'Ethnicity' columns to integer
+	df_rt['Session_ID'] = df_rt['Session_ID'].astype(int)
+	df_rt['Ethnicity'] = df_rt['Ethnicity'].astype(int)
 
-    # Map the ethnicity numbers to their corresponding names
-    ethnicity_mapping = {
-        1: 'Black',
-        2: 'Latino',
-        3: 'White'
-    }
-    df_rt['Ethnicity'] = df_rt['Ethnicity'].map(ethnicity_mapping)
+	# Map the ethnicity numbers to their corresponding names
+	ethnicity_mapping = {
+		1: 'Black',
+		2: 'Latino',
+		3: 'White'
+	}
+	df_rt['Ethnicity'] = df_rt['Ethnicity'].map(ethnicity_mapping)
 
-    # Filter the DataFrame to include only the desired ethnicity
-    desired_ethnicity = 'Latino'
-    interventions_df = df_rt[df_rt['Ethnicity'] == desired_ethnicity]
+	# Filter the DataFrame to include only the desired ethnicity
+	desired_ethnicity = 'Latino'
+	interventions_df = df_rt[df_rt['Ethnicity'] == desired_ethnicity]
 
-    plt.figure(figsize=(15, 5))
+	plt.figure(figsize=(15, 5))
 
-    # Define a color palette with higher contrast
-    color_palette = ["#6699CC", "#CC6666"]
+	# Define a color palette with higher contrast
+	color_palette = ["#6699CC", "#CC6666"]
 
-    # Plot the Scene data
-    scene_line = sns.lineplot(data=scene_df, x='BeginTime', y=dimension, color='none')
+	# Plot the Scene data
+	scene_line = sns.lineplot(data=scene_df, x='BeginTime', y=dimension, color='none')
 
-    # Plot the Officer data
-    officer_line = sns.lineplot(data=officer_df, x='BeginTime', y=dimension, color=color_palette[0])
+	# Plot the Officer data
+	officer_line = sns.lineplot(data=officer_df, x='BeginTime', y=dimension, color=color_palette[0])
 
-    # Plot the Driver data
-    driver_line = sns.lineplot(data=driver_df, x='BeginTime', y=dimension, color=color_palette[1])
+	# Plot the Driver data
+	driver_line = sns.lineplot(data=driver_df, x='BeginTime', y=dimension, color=color_palette[1])
 
-    # Interpolate the dimension value of the scene at the response times
-    response_dimension = np.interp(interventions_df['Reaction_t'], scene_df['BeginTime'], scene_df[dimension])
+	# Interpolate the dimension value of the scene at the response times
+	response_dimension = np.interp(interventions_df['Reaction_t'], scene_df['BeginTime'], scene_df[dimension])
 
-    # Add the scatter plot on top of the line plot
-    colors = {desired_ethnicity: 'black'}
-    scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['Ethnicity'].map(colors), s=20, zorder=10)
+	# Add the scatter plot on top of the line plot
+	colors = {desired_ethnicity: 'black'}
+	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['Ethnicity'].map(colors), s=20, zorder=10)
 
-    # Create legend for the lines
-    line_legend = [officer_line.lines[1], driver_line.lines[2]]
+	# Create legend for the lines
+	line_legend = [officer_line.lines[1], driver_line.lines[2]]
 
-    # Create legend for the scatter plot
-    scatter_legend = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='black', markersize=8)]
+	# Create legend for the scatter plot
+	scatter_legend = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='black', markersize=8)]
 
-    # Combine the legends
-    legend_handles = line_legend + scatter_legend
-    legend_labels = ['Officer', 'Driver', 'Responses']
+	# Combine the legends
+	legend_handles = line_legend + scatter_legend
+	legend_labels = ['Officer', 'Driver', 'Responses']
 
-    # Add the combined legend to the plot
-    plt.legend(handles=legend_handles, labels=legend_labels, loc='best', frameon=False, prop={'family':'Arial Narrow', 'size': 10})
+	# Add the combined legend to the plot
+	plt.legend(handles=legend_handles, labels=legend_labels, loc='best', frameon=False, prop={'family':'Arial Narrow', 'size': 10})
 
-    plt.title(f'Evolution of {dimension} Over Time', fontsize=20, fontname='Arial Narrow')
-    plt.text(0.5, 0.95, f'POI ethnicity: {desired_ethnicity}', horizontalalignment='center', fontsize=11, transform=plt.gca().transAxes)
-    plt.ylim(0, 1)# Set y-axis limits to 0 and 1
+	plt.title(f'Evolution of {dimension} Over Time', fontsize=20, fontname='Arial Narrow')
+	plt.text(0.5, 0.95, f'POI ethnicity: {desired_ethnicity}', horizontalalignment='center', fontsize=11, transform=plt.gca().transAxes)
+	plt.ylim(0, 1)# Set y-axis limits to 0 and 1
 
-    # Set background color to white
-    plt.gca().set_facecolor('white')
+	# Set background color to white
+	plt.gca().set_facecolor('white')
 
-    # Set tick label font size and style
-    plt.xticks(fontsize=12, fontname='Arial Narrow')
-    plt.yticks(fontsize=12, fontname='Arial Narrow')
+	# Set tick label font size and style
+	plt.xticks(fontsize=12, fontname='Arial Narrow')
+	plt.yticks(fontsize=12, fontname='Arial Narrow')
 
-    # Set axis labels font size and style
-    plt.xlabel('Time (s)', fontsize=10, fontname='Arial Narrow')
-    plt.ylabel(f'{dimension} Level', fontsize=10, fontname='Arial Narrow')
+	# Set axis labels font size and style
+	plt.xlabel('Time (s)', fontsize=10, fontname='Arial Narrow')
+	plt.ylabel(f'{dimension} Level', fontsize=10, fontname='Arial Narrow')
 
-    # Despine top and right axes
-    sns.despine(top=True, right=True)
+	# Despine top and right axes
+	sns.despine(top=True, right=True)
 
-    # Save the figure to a BytesIO object
-    bytes_image = io.BytesIO()
-    plt.savefig(bytes_image, format='png')
-    bytes_image.seek(0)
+	# Save the figure to a BytesIO object
+	bytes_image = io.BytesIO()
+	plt.savefig(bytes_image, format='png')
+	bytes_image.seek(0)
 
-    # Convert the BytesIO object to a base64-encoded string
-    base64_png = base64.b64encode(bytes_image.getvalue()).decode('ascii')
+	# Convert the BytesIO object to a base64-encoded string
+	base64_png = base64.b64encode(bytes_image.getvalue()).decode('ascii')
 
-    # Pass the base64-encoded string to the template
-    return render_template('analysis.html', chart_image=base64_png)
+	# Pass the base64-encoded string to the template
+	return render_template('analysis.html', chart_image=base64_png)
 
 
 @socketio.on('ready')
@@ -295,14 +295,14 @@ def handle_ready(data):
 @app.route('/experience_menu')
 def experience_menu():
 
-    # Retrieve the last active session_id from the Google Spreadsheet
-    df_s = get_s_data()
-    last_session_id = df_s['session_id'].iloc[-1]
+	# Retrieve the last active session_id from the Google Spreadsheet
+	df_s = get_s_data()
+	last_session_id = df_s['session_id'].iloc[-1]
 
-    # Convert the int64 to a regular int before storing it in the session
-    session['session_id'] = int(last_session_id)
+	# Convert the int64 to a regular int before storing it in the session
+	session['session_id'] = int(last_session_id)
 
-    return render_template('experience_menu.html')
+	return render_template('experience_menu.html')
 
 @app.route('/waiting_room')
 def waiting_room():
@@ -310,14 +310,17 @@ def waiting_room():
 
 @app.route('/ar_vr')
 def ar_vr():
-	db = get_db()
-	cur = db.cursor()
 
-	# Retrieve the last active session_id from the database
-	cur.execute('SELECT session_id FROM Sessions WHERE session_status = ? ORDER BY session_timestamp DESC LIMIT 1', ('active',))
-	pairing_id = cur.fetchone()[0]
+	# Retrieve the last active session_id from the Google Spreadsheet
+	df_s = get_s_data()
+	ethnicity = df_s['ethnicity'].iloc[1]
+	pairing_id = df_s['session_id'].iloc[-1]
+	session_id = int(str(ethnicity) + str(pairing_id).zfill(3))
 
-	return render_template('ar_vr.html', pairing_id=pairing_id)
+	# Convert the int64 to a regular int before storing it in the session
+	session['session_id'] = int(session_id)
+	
+	return render_template('ar_vr.html', pairing_id=session_id)
 
 @app.route('/video')
 def video():
@@ -352,22 +355,22 @@ def save_responsetime():
 	
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
-    if request.method == 'POST':
-        feedback = request.form['feedback']
-        session_id = session.get('session_id')
-        app.logger.debug('Session ID when saving feedback: %s', session_id) # DEBUG
+	if request.method == 'POST':
+		feedback = request.form['feedback']
+		session_id = session.get('session_id')
+		app.logger.debug('Session ID when saving feedback: %s', session_id) # DEBUG
 
-        try:
-            # Add the feedback to the Google Sheet
-            add_feedback(session_id, feedback)
+		try:
+			# Add the feedback to the Google Sheet
+			add_feedback(session_id, feedback)
 
-            return render_template('feedback.html', message='Thank you for your feedback')
-        except Exception as e:
-            # Handle the exception, you can log the error or return an error message
-            return render_template('feedback.html', message='Unable to save your feedback.')
-    else:
-        # Render the feedback form
-        return render_template('feedback.html')
+			return render_template('feedback.html', message='Thank you for your feedback')
+		except Exception as e:
+			# Handle the exception, you can log the error or return an error message
+			return render_template('feedback.html', message='Unable to save your feedback.')
+	else:
+		# Render the feedback form
+		return render_template('feedback.html')
 
 if __name__ == '__main__':
 	socketio.run(app)
