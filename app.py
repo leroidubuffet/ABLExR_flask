@@ -311,9 +311,9 @@ def waiting_room():
 @app.route('/ar_vr')
 def ar_vr():
 
-	# Retrieve the last active session_id from the Google Spreadsheet
+	# Retrieve the last saved session_id from the Google Spreadsheet
 	df_s = get_s_data()
-	ethnicity = df_s['ethnicity'].iloc[1]
+	ethnicity = df_s['ethnicity'].iloc[-1]
 	pairing_id = df_s['session_id'].iloc[-1]
 	session_id = int(str(ethnicity) + str(pairing_id).zfill(3))
 
