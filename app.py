@@ -22,6 +22,8 @@ gc = gspread.service_account_from_dict(credentials)
 gs = gc.open("ABLExR-DATA")
 wk = gs.get_worksheet(0)
 
+
+
 def get_data():
     return pd.DataFrame(wk.get_all_records())
 
@@ -48,3 +50,28 @@ def reaction(sesionId, reactionTime):
     add_record(int(sesionId), int(reactionTime))
     # TODO the method will return the msg to display on the screen
     return "Avg. Intervention Time: 12.6s"
+
+
+
+@app.route("/case3/add_sesion/<sesionId>/<ethnicity>/<descripion>")
+def add_session(sesionId, ethnicity, descripion=""):  
+    wk2 = gs.get_worksheet(1)
+    df2 = pd.DataFrame(wk2.get_all_records())
+    record = [sesionId,ethnicity,descripion]
+    df2.loc[len(df2)] = record
+    wk2.update([df2.columns.values.tolist()] + df2.values.tolist())
+    return "OK"
+
+
+@app.route("/case3/last_session")
+def last_session():  
+    wk2 = gs.get_worksheet(1)
+    df = wk2.get_all_records()
+    sessionId = int(df[-1]["ethnicity"]) * 1000 +  int(df[-1]["sesionId"])
+    return str(sessionId)
+
+
+
+
+
+
