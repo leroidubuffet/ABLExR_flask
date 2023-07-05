@@ -46,4 +46,5 @@ def index():
 @app.route("/case3/<sesionId>/<reactionTime>")
 def reaction(sesionId, reactionTime):
     add_record(int(sesionId), int(reactionTime))
-    return "OK"
+    # TODO the method will return the msg to display on the screen
+    return "Avg. Intervention Time: 12.6s"
