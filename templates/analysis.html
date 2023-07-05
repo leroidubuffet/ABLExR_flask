@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Session analysis</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+	<style>
+
+	</style>
+	<script>
+		function submitForm() {
+			document.getElementById("dimensionForm").submit();
+		}
+	</script>
+</head>
+<body>
+	<div class="dropdown-container">
+		<form id="dimensionForm" action="/analysis" method="post">
+			<label for="dimension">Select Dimension:</label>
+			<select id="dimension" name="dimension" onchange="submitForm()">
+				<option selected disabled>Select a dimension</option>
+				<option value="Anger">Anger</option>
+				<option value="Distress">Distress</option>
+				<option value="Anxiety">Anxiety</option>
+				<option value="Annoyance">Annoyance</option>
+				<option value="Disapproval">Disapproval</option>
+			</select>			
+		</form>
+	</div>
+	<br>
+	<img src="data:image/png;base64,{{ chart_image }}">
+</body>
+</html>

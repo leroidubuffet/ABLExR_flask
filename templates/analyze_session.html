@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analyze Session</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Analyze Session</h1>
+        <form method="post">
+            <input type="text" autocomplete="off" maxlength="4" name="session_id" placeholder="Enter Session ID">
+            <button type="submit">Analyze</button>
+        </form>
+		{% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
