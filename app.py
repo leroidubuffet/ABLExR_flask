@@ -28,7 +28,7 @@ def get_data():
 def add_record(sesionId, reactionTime):
     ethnicity = int(sesionId / 1000)
     id = sesionId % 1000
-    now = datetime.datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+    now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     record = [id,ethnicity,reactionTime, now]
     df.loc[len(df)] = record
     wk.update([df.columns.values.tolist()] + df.values.tolist())
