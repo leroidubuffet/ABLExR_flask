@@ -21,9 +21,9 @@ function onPlayerStateChange(event) {
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-        height: '390',
-        width: '640',
-        videoId: 'g_6oGqyp7Ww',
+        height: '600',
+        width: '800',
+        videoId: '3-kP8i9Lwbg',
         playerVars: {
             'controls': 0,
             'autoplay': 1,
