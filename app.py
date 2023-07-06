@@ -136,8 +136,11 @@ def new_session():
 		race_digit = None
 		ethnicity = request.form['ethnicity']
 		session_description = request.form['session_description']
+		print("Ethnicity:", ethnicity)  # New print statement
+		print("Session Description:", session_description)  # New print statement
 		if ethnicity == 'random':
 			ethnicity_id = random.choice([1, 2, 3])
+			race_digit = str(ethnicity_id)  # Set race_digit here as well
 		else:
 			ethnicity_mapping = {
 				'black': 1,
@@ -148,9 +151,13 @@ def new_session():
 			if ethnicity_id is not None:
 				race_digit = str(ethnicity_id)
 
-			user_session_id = request.form['session_id']
-			if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
-				session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
+		print("Race Digit:", race_digit)  # New print statement
+
+		user_session_id = request.form['session_id']
+		print("User Session ID:", user_session_id)  # New print statement
+		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
+			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
+			print("Session ID:", session_id)  # New print statement
 
 			# Save the record to Google Spreadsheet
 			add_session(session_id, session_description)
