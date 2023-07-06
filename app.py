@@ -92,7 +92,6 @@ def add_feedback(session_id, feedback):
 		app.logger.error('Error when adding feedback: %s', e)
 
 
-
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.secret_key = '0987654321' # DEBUG store this key in an environment variable or a configuration file
@@ -328,11 +327,9 @@ def video():
 
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
-	app.logger.debug('Session data when saving response time: %s', session) # DEBUG
 	data = request.get_json()
 	response_time = round(float(data['timestamp']), 2)
 	trainee_id = session['trainee_id']
-	app.logger.debug('Response time: %s', response_time) # DEBUG
 
 	try:
 		db = get_db()
@@ -358,7 +355,6 @@ def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
 		session_id = session.get('session_id')
-		app.logger.debug('Session ID when saving feedback: %s', session_id) # DEBUG
 
 		try:
 			# Add the feedback to the Google Sheet
