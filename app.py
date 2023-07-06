@@ -62,10 +62,6 @@ df_rt = get_rt_data()
 df_s = get_s_data()
 df_f = get_f_data()
 
-print(df_rt.head())
-print(df_s.head())
-print(df_f.head())
-
 def add_record(session_id, reaction_t):
 	ethnicity = int(session_id[0])
 	id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
@@ -131,8 +127,7 @@ def trainer_dashboard():
 
 @app.route('/new_session', methods=['GET', 'POST'])
 def new_session():
-	ethnicities = ['black', 'latino', 'white', 'random']
-	random.shuffle(ethnicities)  # Shuffle the list
+	ethnicities = ['random', 'black', 'latino', 'white']
 	session_id = None
 	form_submitted = False
 
