@@ -214,10 +214,12 @@ def render_seaborn_chart():
 	df_rt['Ethnicity'] = df_rt['Ethnicity'].map(ethnicity_mapping)
 
 	# Filter the DataFrame to include only the desired ethnicity
-	desired_ethnicity = 'Latino'
+	desired_ethnicity = 'Black'
 	interventions_df = df_rt[df_rt['Ethnicity'] == desired_ethnicity]
 
 	plt.figure(figsize=(15, 5))
+
+	plt.xlim(0, 180)  # Set x-axis limits to 0 and 180
 
 	# Define a color palette with higher contrast
 	color_palette = ["#6699CC", "#CC6666"]
@@ -236,7 +238,7 @@ def render_seaborn_chart():
 
 	# Add the scatter plot on top of the line plot
 	colors = {desired_ethnicity: 'black'}
-	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['Ethnicity'].map(colors), s=20, zorder=10)
+	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['Ethnicity'].map(colors), s=10, zorder=10)
 
 	# Create legend for the lines
 	line_legend = [officer_line.lines[1], driver_line.lines[2]]
