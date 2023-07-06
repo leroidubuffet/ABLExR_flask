@@ -16,7 +16,7 @@
                 <option value="{{ ethnicity }}">{{ ethnicity.capitalize() }}</option>
                 {% endfor %}
             </select>
-            <input type="text" autocomplete="off" name="session_description" placeholder="Session Description" required> <!-- New input field for session description -->
+            <input type="text" autocomplete="off" name="session_description" placeholder="Session Description">
             <button id="submitBtn" type="submit" {% if form_submitted %}disabled{% endif %}>Start Session</button>
         </form>
         {% if session_id %}
