@@ -31,7 +31,7 @@ credentials = {
 
 # Google Sheets setup
 gc = gspread.service_account_from_dict(credentials)
-gs = gc.open("ABLExR-DATA")
+gs = gc.open("ABLExR-DATA")		# open document
 wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
 wk_s = gs.get_worksheet(1) 		# session spreadsheet
 wk_f = gs.get_worksheet(2) 		# feedback spreadsheet
@@ -127,8 +127,8 @@ def new_session():
 		race_digit = None
 		ethnicity = request.form['ethnicity']
 		session_description = request.form['session_description']
-		print("Ethnicity:", ethnicity)  # New print statement
-		print("Session Description:", session_description)  # New print statement
+		print("ethnicity:", ethnicity)  # New print statement DEBUG
+		print("Session Description:", session_description)  # New print statement DEBUG
 		if ethnicity == 'random':
 			ethnicity_id = random.choice([1, 2, 3])
 			race_digit = str(ethnicity_id)  # Set race_digit here as well
@@ -142,10 +142,10 @@ def new_session():
 			if ethnicity_id is not None:
 				race_digit = str(ethnicity_id)
 
-		print("Race Digit:", race_digit)  # New print statement
+		print("Race Digit:", race_digit)  # New print statement DEBUG
 
 		user_session_id = request.form['session_id']
-		print("User Session ID:", user_session_id)  # New print statement
+		print("User Session ID:", user_session_id)  # New print statement DEBUG
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
 			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
 			print("Session ID:", session_id)  # New print statement
@@ -199,9 +199,9 @@ def render_seaborn_chart():
 	# Load the data from the Google Spreadsheet
 	df_rt = get_rt_data()
 
-	# Convert the 'Session_ID' and 'Ethnicity' columns to integer
-	df_rt['Session_ID'] = df_rt['Session_ID'].astype(int)
-	df_rt['Ethnicity'] = df_rt['Ethnicity'].astype(int)
+	# Convert the 'session_ID' and 'ethnicity' columns to integer
+	df_rt['session_ID'] = df_rt['session_ID'].astype(int)
+	df_rt['ethnicity'] = df_rt['ethnicity'].astype(int)
 
 	# Map the ethnicity numbers to their corresponding names
 	ethnicity_mapping = {
@@ -209,11 +209,11 @@ def render_seaborn_chart():
 		2: 'Latino',
 		3: 'White'
 	}
-	df_rt['Ethnicity'] = df_rt['Ethnicity'].map(ethnicity_mapping)
+	df_rt['ethnicity'] = df_rt['ethnicity'].map(ethnicity_mapping)
 
 	# Filter the DataFrame to include only the desired ethnicity
 	desired_ethnicity = 'Black'
-	interventions_df = df_rt[df_rt['Ethnicity'] == desired_ethnicity]
+	interventions_df = df_rt[df_rt['ethnicity'] == desired_ethnicity]
 
 	plt.figure(figsize=(15, 5))
 
@@ -236,7 +236,7 @@ def render_seaborn_chart():
 
 	# Add the scatter plot on top of the line plot
 	colors = {desired_ethnicity: 'black'}
-	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['Ethnicity'].map(colors), s=10, zorder=10)
+	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['ethnicity'].map(colors), s=10, zorder=10)
 
 	# Create legend for the lines
 	line_legend = [officer_line.lines[1], driver_line.lines[2]]
