@@ -1,5 +1,4 @@
 # Standard libraries
-import sqlite3
 import random
 from datetime import datetime
 import logging
@@ -33,9 +32,9 @@ credentials = {
 # Google Sheets setup
 gc = gspread.service_account_from_dict(credentials)
 gs = gc.open("ABLExR-DATA")
-wk_rt = gs.get_worksheet(0) # reaction time spreadsheet
-wk_s = gs.get_worksheet(1) # session spreadsheet
-wk_f = gs.get_worksheet(2) # feedback spreadsheet
+wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
+wk_s = gs.get_worksheet(1) 		# session spreadsheet
+wk_f = gs.get_worksheet(2) 		# feedback spreadsheet
 
 def get_rt_data():
 	records = wk_rt.get_all_records()
