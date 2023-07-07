@@ -62,12 +62,13 @@ df_s = get_s_data()
 df_f = get_f_data()
 
 def add_record(session_id, reaction_t):
-	ethnicity = int(session_id[0])
-	id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
-	now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
-	record = [id, ethnicity, reaction_t, now]
-	df_rt.loc[len(df_rt)] = record
-	wk_rt.update([df_rt.columns.values.tolist()] + df_rt.values.tolist())
+    session_id = str(session_id)  # Convert session_id to string
+    ethnicity = int(session_id[0])
+    id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
+    now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+    record = [id, ethnicity, reaction_t, now]
+    df_rt.loc[len(df_rt)] = record
+    wk_rt.update([df_rt.columns.values.tolist()] + df_rt.values.tolist())
 
 def add_session(session_id, session_description):
 	ethnicity = int(session_id[0])
@@ -142,7 +143,7 @@ def new_session():
 		print("User Session ID:", user_session_id)  # New print statement DEBUG
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
 			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
-			print("Session ID:", session_id)  # New print statement
+			print("Session ID:", session_id)  # New print statement DEBUG
 
 			# Save the record to Google Spreadsheet
 			add_session(session_id, session_description)
@@ -316,16 +317,18 @@ def video():
 
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
-	data = request.get_json()
-	response_time = round(float(data['timestamp']), 2)
-	trainee_id = session['trainee_id']
+    data = request.get_json()
+    response_time = round(float(data['timestamp']), 2)
+    session_id = session['session_id']  # Get the session_id from the session
 
-	try:
-		return 'Time saved'
-	except Exception as e:
-		# Handle the exception, you can log the error or return an error message
-		return 'Unable to save your time.'
-
+    try:
+        # Add the record to the DataFrame and Google Spreadsheet
+        add_record(session_id, response_time)
+        return 'Time saved'
+    except Exception as e:
+        # Handle the exception, you can log the error or return an error message
+        app.logger.error('Error when saving response time: %s', e)
+        return 'Unable to save your time.'
 	
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
