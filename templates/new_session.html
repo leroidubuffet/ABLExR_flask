@@ -9,13 +9,14 @@
         <h1>New Session</h1>
         <form method="post">
             <p>Choose a session ID and the ethnicity of the Person Of Interest</p>
+			<p><a href="https://docs.google.com/spreadsheets/d/12kdXMixqPOi5dwPBsxawfAe2asPIWhMyfl51is0jZyc/edit?usp=sharing" target="_blank">Training data</a></p>
             <input type="text" autocomplete="off" name="session_id" maxlength="3" placeholder="Session ID (max 3 digits)" required>
             <select name="ethnicity">
                 {% for ethnicity in ethnicities %}
                 <option value="{{ ethnicity }}">{{ ethnicity.capitalize() }}</option>
                 {% endfor %}
             </select>
-            <input type="text" autocomplete="off" name="session_description" placeholder="Session Description" required> <!-- New input field for session description -->
+            <input type="text" autocomplete="off" name="session_description" placeholder="Session Description">
             <button id="submitBtn" type="submit" {% if form_submitted %}disabled{% endif %}>Start Session</button>
         </form>
         {% if session_id %}
@@ -23,7 +24,7 @@
         <h1>{{ session_id }}</h1>
         {% endif %}
         {% if form_submitted %}
-        <a id="nextLink" href="{{ url_for('render_seaborn_chart', session_id=session_id) }}">Next</a>
+        <a id="nextLink" href="{{ url_for('render_seaborn_chart', session_id=session_id) }}">Go to session analysis</a>
         {% endif %}
     </div>
 </body>

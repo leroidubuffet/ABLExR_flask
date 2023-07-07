@@ -62,10 +62,6 @@ df_rt = get_rt_data()
 df_s = get_s_data()
 df_f = get_f_data()
 
-print(df_rt.head())
-print(df_s.head())
-print(df_f.head())
-
 def add_record(session_id, reaction_t):
 	ethnicity = int(session_id[0])
 	id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
@@ -90,7 +86,6 @@ def add_feedback(session_id, feedback):
 		wk_f.update([df_f.columns.values.tolist()] + df_f.values.tolist())
 	except Exception as e:
 		app.logger.error('Error when adding feedback: %s', e)
-
 
 
 app = Flask(__name__)
@@ -132,8 +127,7 @@ def trainer_dashboard():
 
 @app.route('/new_session', methods=['GET', 'POST'])
 def new_session():
-	ethnicities = ['black', 'latino', 'white', 'random']
-	random.shuffle(ethnicities)  # Shuffle the list
+	ethnicities = ['random', 'black', 'latino', 'white']
 	session_id = None
 	form_submitted = False
 
@@ -142,8 +136,11 @@ def new_session():
 		race_digit = None
 		ethnicity = request.form['ethnicity']
 		session_description = request.form['session_description']
+		print("Ethnicity:", ethnicity)  # New print statement
+		print("Session Description:", session_description)  # New print statement
 		if ethnicity == 'random':
 			ethnicity_id = random.choice([1, 2, 3])
+			race_digit = str(ethnicity_id)  # Set race_digit here as well
 		else:
 			ethnicity_mapping = {
 				'black': 1,
@@ -154,9 +151,13 @@ def new_session():
 			if ethnicity_id is not None:
 				race_digit = str(ethnicity_id)
 
-			user_session_id = request.form['session_id']
-			if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
-				session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
+		print("Race Digit:", race_digit)  # New print statement
+
+		user_session_id = request.form['session_id']
+		print("User Session ID:", user_session_id)  # New print statement
+		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
+			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
+			print("Session ID:", session_id)  # New print statement
 
 			# Save the record to Google Spreadsheet
 			add_session(session_id, session_description)
@@ -220,10 +221,12 @@ def render_seaborn_chart():
 	df_rt['Ethnicity'] = df_rt['Ethnicity'].map(ethnicity_mapping)
 
 	# Filter the DataFrame to include only the desired ethnicity
-	desired_ethnicity = 'Latino'
+	desired_ethnicity = 'Black'
 	interventions_df = df_rt[df_rt['Ethnicity'] == desired_ethnicity]
 
 	plt.figure(figsize=(15, 5))
+
+	plt.xlim(0, 180)  # Set x-axis limits to 0 and 180
 
 	# Define a color palette with higher contrast
 	color_palette = ["#6699CC", "#CC6666"]
@@ -242,7 +245,7 @@ def render_seaborn_chart():
 
 	# Add the scatter plot on top of the line plot
 	colors = {desired_ethnicity: 'black'}
-	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['Ethnicity'].map(colors), s=20, zorder=10)
+	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['Ethnicity'].map(colors), s=10, zorder=10)
 
 	# Create legend for the lines
 	line_legend = [officer_line.lines[1], driver_line.lines[2]]
@@ -328,11 +331,9 @@ def video():
 
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
-	app.logger.debug('Session data when saving response time: %s', session) # DEBUG
 	data = request.get_json()
 	response_time = round(float(data['timestamp']), 2)
 	trainee_id = session['trainee_id']
-	app.logger.debug('Response time: %s', response_time) # DEBUG
 
 	try:
 		db = get_db()
@@ -358,7 +359,6 @@ def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
 		session_id = session.get('session_id')
-		app.logger.debug('Session ID when saving feedback: %s', session_id) # DEBUG
 
 		try:
 			# Add the feedback to the Google Sheet
