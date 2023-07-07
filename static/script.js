@@ -18,14 +18,13 @@ function onPlayerStateChange(event) {
     }
 }
 
-
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '600',
         width: '800',
         videoId: '3-kP8i9Lwbg',
         playerVars: {
-            'controls': 0,
+            'controls': 1,
             'autoplay': 1,
             'disablekb': 1,
             'rel': 0,

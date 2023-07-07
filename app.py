@@ -232,11 +232,11 @@ def render_seaborn_chart():
 	driver_line = sns.lineplot(data=driver_df, x='BeginTime', y=dimension, color=color_palette[1])
 
 	# Interpolate the dimension value of the scene at the response times
-	response_dimension = np.interp(interventions_df['Reaction_t'], scene_df['BeginTime'], scene_df[dimension])
+	response_dimension = np.interp(interventions_df['reaction_t'], scene_df['BeginTime'], scene_df[dimension])
 
 	# Add the scatter plot on top of the line plot
 	colors = {desired_ethnicity: 'black'}
-	scatter = plt.scatter(interventions_df['Reaction_t'], response_dimension, c=interventions_df['ethnicity'].map(colors), s=10, zorder=10)
+	scatter = plt.scatter(interventions_df['reaction_t'], response_dimension, c=interventions_df['ethnicity'].map(colors), s=10, zorder=10)
 
 	# Create legend for the lines
 	line_legend = [officer_line.lines[1], driver_line.lines[2]]
