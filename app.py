@@ -92,12 +92,6 @@ socketio = SocketIO(app)
 app.secret_key = '0987654321' # DEBUG store this key in an environment variable or a configuration file
 app.logger.setLevel(logging.DEBUG) # DEBUG
 
-@app.teardown_appcontext
-def close_connection(exception):
-	db = getattr(g, '_database', None)
-	if db is not None:
-		db.close()
-
 @app.route('/')
 def index():
 	return render_template('index.html')
@@ -327,18 +321,6 @@ def save_responsetime():
 	trainee_id = session['trainee_id']
 
 	try:
-		db = get_db()
-		cur = db.cursor()
-
-		# Retrieve the last active session_id from the database
-		cur.execute('SELECT session_id FROM Sessions WHERE session_status = ? ORDER BY session_timestamp DESC LIMIT 1', ('active',))
-		session_id = cur.fetchone()[0]
-		session['session_id'] = session_id
-
-		# Then, update the Session_Trainees table with the intervention time
-		cur.execute('UPDATE Session_Trainees SET intervention_t = ? WHERE session_id = ? AND trainee_id = ?', (response_time, session_id, trainee_id))
-		
-		db.commit()
 		return 'Time saved'
 	except Exception as e:
 		# Handle the exception, you can log the error or return an error message
@@ -350,6 +332,7 @@ def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
 		session_id = session.get('session_id')
+		print(session_id)
 
 		try:
 			# Add the feedback to the Google Sheet
