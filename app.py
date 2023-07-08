@@ -160,6 +160,8 @@ def analyze_session():
 	error = None
 	if request.method == 'POST':
 		session_id = request.form['session_id']
+		print("Analyza session.Session ID:", session_id)  # New print statement DEBUG
+
 		if not session_id.isdigit() or len(session_id) != 4:
 			error = 'Insert a four digit number please.'
 		else:
@@ -286,10 +288,11 @@ def experience_menu():
 
 	# Retrieve the last active session_id from the Google Spreadsheet
 	df_s = get_s_data()
-	last_session_id = df_s['session_id'].iloc[-1]
+	last_session_id = df_s['ethnicity'].iloc[-1] * 1000 + df_s['session_id'].iloc[-1]
 
 	# Convert the int64 to a regular int before storing it in the session
 	session['session_id'] = int(last_session_id)
+	print("Experience.Session ID:", last_session_id)  # New print statement DEBUG
 
 	return render_template('experience_menu.html')
 
@@ -308,6 +311,7 @@ def ar_vr():
 
 	# Convert the int64 to a regular int before storing it in the session
 	session['session_id'] = int(session_id)
+	print("AR/VR.Session ID:", session_id)  # New print statement DEBUG
 	
 	return render_template('ar_vr.html', pairing_id=session_id)
 
@@ -320,6 +324,7 @@ def save_responsetime():
     data = request.get_json()
     response_time = round(float(data['timestamp']), 2)
     session_id = session['session_id']  # Get the session_id from the session
+    print("Save response time.Session ID:", session_id)  # New print statement DEBUG
 
     try:
         # Add the record to the DataFrame and Google Spreadsheet
@@ -335,7 +340,7 @@ def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
 		session_id = session.get('session_id')
-		print(session_id)
+		print("Feedack.Session ID:", session_id)  # New print statement DEBUG
 
 		try:
 			# Add the feedback to the Google Sheet
