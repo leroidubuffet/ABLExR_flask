@@ -44,7 +44,7 @@ def get_wk_by_name(name):
     
 def create_session_wk(id):
     wk = gs.add_worksheet(str(id), 0, 4)
-    wk.append_row(["session_ID", "ethnicity", "reaction_t", "timeStamp"])
+    wk.append_row(["session_id", "ethnicity", "reaction_t", "timeStamp"])
     return wk
 
 def delete_wk(name):
@@ -75,6 +75,7 @@ def get_f_data():
 
 df_rt = get_rt_data()
 df_s = get_s_data()
+
 df_f = get_f_data()
 
 def add_record(session_id, reaction_t):
@@ -94,27 +95,33 @@ def add_record(session_id, reaction_t):
     # Add the record to the worksheet
     wk.append_row(record)
 
+def map_ethnicity(code):
+    ethnicity_mapping = {
+        1: 'Black',
+        2: 'Latino',
+        3: 'White'
+    }
+    return ethnicity_mapping.get(code, 'Unknown')
+
 def add_session(session_id, session_description):
-	ethnicity = int(session_id[0])
-	id = session_id[1:]  # Extract digits 1 to 3 from session_id
-	# id = '_' + session_id[1:]  # Extract digits 1 to 3 from session_id
-	print("add_session id: ", id) # DEBUG
-	record = [id, ethnicity, session_description]
-	wk_s.append_row(record, value_input_option='USER_ENTERED')
+    ethnicity_code = int(session_id[0])
+    ethnicity = map_ethnicity(ethnicity_code)
+    print("add_session id: ", session_id) # DEBUG
+    record = [session_id, ethnicity, session_description]
+    wk_s.append_row(record, value_input_option='USER_ENTERED')
 
 def add_feedback(session_id, feedback):
-	try:
-		session_id = str(session_id)  # Convert session_id to string
-		ethnicity = int(session_id[0])
-		id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
-		record = [id, ethnicity, feedback]
-		df_f.loc[len(df_f)] = record
-		wk_f.update([df_f.columns.values.tolist()] + df_f.values.tolist())
-	except Exception as e:
-		app.logger.error('Error when adding feedback: %s', e)
+    try:
+        session_id = str(session_id)
+        ethnicity = int(session_id[0])
+        id = int(session_id[1:])
+        record = [id, ethnicity, feedback]
+        wk_f.append_row(record, value_input_option='USER_ENTERED')
+    except Exception as e:
+        app.logger.error('Error when adding feedback: %s', e)
+
 
 def validate_session_id(session_id):
-    """Validate session_id. It should be a digit and its length should be 4."""
     if not session_id.isdigit() or len(session_id) != 4:
         return False
     return True
@@ -153,11 +160,11 @@ def new_session():
 		race_digit = None
 		ethnicity = request.form['ethnicity']
 		session_description = request.form['session_description']
-		print("ethnicity:", ethnicity)  # New print statement DEBUG
-		print("Session Description:", session_description)  # New print statement DEBUG
+		print("ethnicity:", ethnicity)  # DEBUG
+		print("Session Description:", session_description)  # DEBUG
 		if ethnicity == 'random':
 			ethnicity_id = random.choice([1, 2, 3])
-			race_digit = str(ethnicity_id)  # Set race_digit here as well
+			race_digit = str(ethnicity_id)
 		else:
 			ethnicity_mapping = {
 				'black': 1,
@@ -168,10 +175,10 @@ def new_session():
 			if ethnicity_id is not None:
 				race_digit = str(ethnicity_id)
 
-		print("Race Digit:", race_digit)  # New print statement DEBUG
+		print("Race Digit:", race_digit)  # DEBUG
 
 		user_session_id = request.form['session_id']
-		print("User Session ID:", user_session_id)  # New print statement DEBUG
+		print("User Session ID:", user_session_id)  # DEBUG
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
 			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
 			print("Session ID:", session_id)  # New print statement DEBUG
@@ -184,7 +191,17 @@ def new_session():
 
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s['session_id'] = df_s['session_id'].astype(int)
-df_s['ethnicity'] = df_s['ethnicity'].astype(int)
+
+def inverse_ethnicity_mapping(ethnicity):
+    reverse_ethnicity_mapping = {
+        'Black': '1',
+        'Latino': '2',
+        'White': '3'
+    }
+    return reverse_ethnicity_mapping.get(ethnicity, 'Unknown')
+print(df_s.columns)
+
+df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
 
 @app.route('/analyze_session', methods=['GET', 'POST'])
 def analyze_session():
@@ -230,7 +247,7 @@ def render_seaborn_chart():
 	# Convert the 'session_ID' and 'ethnicity' columns to integer
 	# Remove the leading underscore and convert to integer
 	# df_rt['session_ID_int'] = df_rt['session_ID'].str[1:].astype(int)
-	df_rt['session_ID_int'] = df_rt['session_ID'].astype(int) # REMOVE
+	df_rt['session_id_int'] = df_rt['session_id'].astype(int) # REMOVE
 	df_rt['ethnicity'] = df_rt['ethnicity'].astype(int)
 
 	# Map the ethnicity numbers to their corresponding names
@@ -310,24 +327,19 @@ def render_seaborn_chart():
 	# Pass the base64-encoded string to the template
 	return render_template('analysis.html', chart_image=base64_png)
 
-
-@socketio.on('ready')
-def handle_ready(data):
-	print('received ready: ' + str(data))
-	emit('update', {'data': data['data'] + ' is connected'}, broadcast=True)
-
 @app.route('/experience_menu')
 def experience_menu():
-
-	# Retrieve the last active session_id from the Google Spreadsheet
-	df_s = get_s_data()
-	last_session_id = df_s['ethnicity'].iloc[-1] * 1000 + df_s['session_id'].iloc[-1]
-
-	# Convert the int64 to a regular int before storing it in the session
-	session['session_id'] = int(last_session_id)
-	print("Experience.Session ID:", last_session_id)  # New print statement DEBUG
-
-	return render_template('experience_menu.html')
+    # Retrieve the last active session_id from the Google Spreadsheet
+    df_s = get_s_data()
+    if not df_s.empty:
+        last_session_id = df_s['session_id'].iloc[-1]
+        session['session_id'] = int(last_session_id)
+        print("Experience.Session ID:", last_session_id)  # New print statement DEBUG
+    else:
+        print("No sessions found.")  # New print statement DEBUG
+        # Handle the case when there are no sessions
+        # You might want to redirect the user or show a message
+    return render_template('experience_menu.html')
 
 @app.route('/waiting_room')
 def waiting_room():
