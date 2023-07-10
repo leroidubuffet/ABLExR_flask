@@ -233,9 +233,7 @@ def ar_vr():
 
 	# Retrieve the last saved session_id from the Google Spreadsheet
 	df_s = get_s_data()
-	ethnicity = df_s['ethnicity'].iloc[-1]
-	pairing_id = df_s['session_id'].iloc[-1]
-	session_id = int(str(ethnicity) + str(pairing_id).zfill(3))
+	session_id = str(df_s['session_id'].iloc[-1])
 
 	# Convert the int64 to a regular int before storing it in the session
 	session['session_id'] = int(session_id)
