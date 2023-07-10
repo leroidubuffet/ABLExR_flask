@@ -17,6 +17,7 @@ function onPlayerStateChange(event) {
             };
             xhr.send(JSON.stringify({ timestamp: 180 }));
         }
+		window.location.href = "/feedback";
     }
 }
 
