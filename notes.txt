@@ -12,29 +12,25 @@ see trainee
 http://localhost:5000/trainee1
 http://localhost:5000/trainee2
 
+remove session_id column from session wk
+reconnect matplotlib
+leading zeroes
+video hosting
+ethnicity value across wks
+dividir código
+corregir funciones gs
+Necesitamos delete ws?
+is session ok for distributed sessions?
+ethnicity y session id. Get session id from wk name remove session_id column YES
+delete monitor.html
+Miguel:
+reconectar chart
+qué usar para colocar los puntos
+video hosting
+dividir código
+credenciales seguras + password
 
-Connect to the database:
-
-import sqlite3
-
-def get_db_connection():
-    conn = sqlite3.connect('training.db')
-    return conn
-
-
-PROMPT
-0. We are going to store some data into a database. The data will be:
-trainee_name
-session_id
-ethnicity
-response_t
-
-Ethnicity will have three options: black, white and latino
-This database will be created once, and then data will be saved into it. Can you give me the generation script and add the connection script to the pages that need it?
-
-1. The first page both trainer and trainee must be the same. It will show two buttons with the legend 'Trainer' and 'Trainee'. 
-2. When pressing 'Trainer' the trainer will be brought to a login page where they will be asked for a password. This password will be hardcoded and it will be '1234'. If the password is set incorrectly, a message will be shown 'Wrong password'. If the password is correct, the trainer will be brought to the next page.
-3. In the next page, the trainer will be given two options: 'New session' and 'Analyze session'.
-4. 'New session' will bring them to a page where the trainer will be asked to introduce a session ID and to choose an ethnicity from the previous options. A fourth option for the ethnicity to be chosen randomly must be give, and the randomizing function implemented. The session ID and the ethnicity must be saved in the database.   
-5. Analyze session will bring them to a page where they will be asked for a session ID. This ID will be queried in the database and the result will be shown in the next analysis page.
-6. When pressing 'Trainee' the will be take to another page where they will be asked to introduce its name. The name must be saved into the database. Once they have correctly introduced their name, they will be brought to waiting page with instructions the the trainee connection signal must be sent to the trainer page (monitor). The connection signal must send the trainees name to the trainer page.
+BEFORE CLOSING
+Disable youtube controls
+Delete all DEBUG REMOVE messages
+Change default value on script.js
