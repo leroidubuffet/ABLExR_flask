@@ -7,24 +7,25 @@ import base64
 from flask import render_template
 from google_sheets import get_rt_data  # Assuming data.py is where get_rt_data is defined
 
-def render_seaborn_chart(request):
-	if request.method == 'POST':
-		dimension = request.form['dimension']
+def render_seaborn_chart(session_id):
+	if session_id.method == 'POST':
+		dimension = session_id.form['dimension']
+		printf('session_id at render:', session_id)
 	else:
-		dimension = 'Anger'
+		dimension = 'Anger'	
 		
-	# Load data from csv
+	# Load hume data from csv
 	officer_df = pd.read_csv('datasets/OF_language.csv')
 	driver_df = pd.read_csv('datasets/DF_language.csv')
 	scene_df = pd.read_csv('datasets/O+D_F_language.csv')
 
-	# Load the data from the Google Spreadsheet
+	# Load reaction times data from the Google Spreadsheet
 	df_rt = get_rt_data()
+    # Filter df_rt to only include rows where the session_id matches the session_id passed to the function
+	df_rt = df_rt.loc[df_rt['session_id'] == session_id]
 
 	# Convert the 'session_ID' and 'ethnicity' columns to integer
-	# Remove the leading underscore and convert to integer
-	# df_rt['session_ID_int'] = df_rt['session_ID'].str[1:].astype(int)
-	df_rt['session_id_int'] = df_rt['session_id'].astype(int) # REMOVE?
+	df_rt['session_id_int'] = df_rt['session_id'].astype(int)
 	df_rt['ethnicity'] = df_rt['ethnicity'].astype(int)
 
 	# Map the ethnicity numbers to their corresponding names
@@ -47,7 +48,7 @@ def render_seaborn_chart(request):
 	color_palette = ["#6699CC", "#CC6666"]
 
 	# Plot the Scene data
-	scene_line = sns.lineplot(data=scene_df, x='BeginTime', y=dimension, color='none')
+	scene_line = sns.lineplot(data=scene_df, x='BeginTime', y=dimension, color='green')
 
 	# Plot the Officer data
 	officer_line = sns.lineplot(data=officer_df, x='BeginTime', y=dimension, color=color_palette[0])
@@ -102,4 +103,5 @@ def render_seaborn_chart(request):
 	base64_png = base64.b64encode(bytes_image.getvalue()).decode('ascii')
 
 	# Pass the base64-encoded string to the template
-	return render_template('analysis.html', chart_image=base64_png)
+	session_id = session_id.view_args['session_id']
+	return render_template('analysis.html', chart_image=base64_png, session_id=session_id, ethnicity=desired_ethnicity)
