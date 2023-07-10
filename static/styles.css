@@ -56,3 +56,12 @@ select {
 	padding: 10px;
 	z-index: 1;
 }
+
+.dropdown-and-session-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.session-info {
+    margin-left: 20px;
+}
