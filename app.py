@@ -36,6 +36,22 @@ wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
 wk_s = gs.get_worksheet(1) 		# session spreadsheet
 wk_f = gs.get_worksheet(2) 		# feedback spreadsheet
 
+def get_wk_by_name(name):
+    try:
+        return gs.worksheet(name)
+    except gspread.exceptions.WorksheetNotFound:
+        return None
+    
+def create_session_wk(id):
+    wk = gs.add_worksheet(str(id), 0, 4)
+    wk.append_row(["session_ID", "ethnicity", "reaction_t", "timeStamp"])
+    return wk
+
+def delete_wk(name):
+    wk = get_wk_by_name(name)
+    if wk is not None:
+        gs.del_worksheet(wk)
+
 def get_rt_data():
 	records = wk_rt.get_all_records()
 	if records:
@@ -67,12 +83,22 @@ def add_record(session_id, reaction_t):
     id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
     now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
     record = [id, ethnicity, reaction_t, now]
-    df_rt.loc[len(df_rt)] = record
-    wk_rt.update([df_rt.columns.values.tolist()] + df_rt.values.tolist())
+    
+    # Get the worksheet for this session
+    wk = get_wk_by_name(session_id)
+    
+    # If the worksheet doesn't exist, create it
+    if wk is None:
+        wk = create_session_wk(session_id)
+    
+    # Add the record to the worksheet
+    wk.append_row(record)
 
 def add_session(session_id, session_description):
 	ethnicity = int(session_id[0])
-	id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
+	id = session_id[1:]  # Extract digits 1 to 3 from session_id
+	# id = '_' + session_id[1:]  # Extract digits 1 to 3 from session_id
+	print("add_session id: ", id) # DEBUG
 	record = [id, ethnicity, session_description]
 	wk_s.append_row(record, value_input_option='USER_ENTERED')
 
@@ -87,6 +113,11 @@ def add_feedback(session_id, feedback):
 	except Exception as e:
 		app.logger.error('Error when adding feedback: %s', e)
 
+def validate_session_id(session_id):
+    """Validate session_id. It should be a digit and its length should be 4."""
+    if not session_id.isdigit() or len(session_id) != 4:
+        return False
+    return True
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -197,7 +228,9 @@ def render_seaborn_chart():
 	df_rt = get_rt_data()
 
 	# Convert the 'session_ID' and 'ethnicity' columns to integer
-	df_rt['session_ID'] = df_rt['session_ID'].astype(int)
+	# Remove the leading underscore and convert to integer
+	# df_rt['session_ID_int'] = df_rt['session_ID'].str[1:].astype(int)
+	df_rt['session_ID_int'] = df_rt['session_ID'].astype(int) # REMOVE
 	df_rt['ethnicity'] = df_rt['ethnicity'].astype(int)
 
 	# Map the ethnicity numbers to their corresponding names
