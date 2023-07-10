@@ -1,20 +1,22 @@
 var player;
+var userHasIntervened = false;
 
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.ENDED) {
-        // User did not press the intervene button, save the default value
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/save_responsetime', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log('Default response time saved successfully.');
-            }
-        };
-        xhr.send(JSON.stringify({ timestamp: 180 }));  // 180 seconds = 3 minutes
-
-        // Redirect to the feedback page
-        window.location.href = "/feedback";
+        if (!userHasIntervened) {
+            // User did not press the intervene button, save the default value
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/save_responsetime', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('Default response time saved successfully.');
+                    // Redirect to the feedback page after the request has completed
+                    window.location.href = "/feedback";
+                }
+            };
+            xhr.send(JSON.stringify({ timestamp: 180 }));
+        }
     }
 }
 
@@ -38,8 +40,6 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
-
-
 function onPlayerReady(event) {
     // Player is ready, enable the button
     var interveneButton = document.querySelector('button');
@@ -61,4 +61,5 @@ function saveResponsetime() {
     };
     xhr.send(JSON.stringify({ timestamp: currentTime }));
 	document.getElementById('intervene-button').disabled = true;
+	userHasIntervened = true;
 }
