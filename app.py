@@ -181,7 +181,7 @@ def new_session():
 		print("User Session ID:", user_session_id)  # DEBUG
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
 			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
-			print("Session ID:", session_id)  # New print statement DEBUG
+			print("Session ID:", session_id)  #  DEBUG
 
 			# Save the record to Google Spreadsheet
 			add_session(session_id, session_description)
@@ -208,7 +208,7 @@ def analyze_session():
 	error = None
 	if request.method == 'POST':
 		session_id = request.form['session_id']
-		print("Analyza session.Session ID:", session_id)  # New print statement DEBUG
+		print("Analyza session.Session ID:", session_id)  #  DEBUG
 
 		if not session_id.isdigit() or len(session_id) != 4:
 			error = 'Insert a four digit number please.'
@@ -334,11 +334,9 @@ def experience_menu():
     if not df_s.empty:
         last_session_id = df_s['session_id'].iloc[-1]
         session['session_id'] = int(last_session_id)
-        print("Experience.Session ID:", last_session_id)  # New print statement DEBUG
+        print("Experience.Session ID:", last_session_id)  # DEBUG
     else:
-        print("No sessions found.")  # New print statement DEBUG
-        # Handle the case when there are no sessions
-        # You might want to redirect the user or show a message
+        print("No sessions found.")  #  DEBUG
     return render_template('experience_menu.html')
 
 @app.route('/waiting_room')
@@ -356,7 +354,7 @@ def ar_vr():
 
 	# Convert the int64 to a regular int before storing it in the session
 	session['session_id'] = int(session_id)
-	print("AR/VR.Session ID:", session_id)  # New print statement DEBUG
+	print("AR/VR.Session ID:", session_id)  #  DEBUG
 	
 	return render_template('ar_vr.html', pairing_id=session_id)
 
@@ -367,9 +365,10 @@ def video():
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
     data = request.get_json()
+    print('Data:', data) # DEBUG
     response_time = round(float(data['timestamp']), 2)
     session_id = session['session_id']  # Get the session_id from the session
-    print("Save response time.Session ID:", session_id)  # New print statement DEBUG
+    print("Save response time.Session ID:", session_id)  #  DEBUG
 
     try:
         # Add the record to the DataFrame and Google Spreadsheet
@@ -385,13 +384,13 @@ def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
 		session_id = session.get('session_id')
-		print("Feedack.Session ID:", session_id)  # New print statement DEBUG
+		print("Feedack.Session ID:", session_id)  #  DEBUG
 
 		try:
 			# Add the feedback to the Google Sheet
 			add_feedback(session_id, feedback)
 
-			return render_template('feedback.html', message='Thank you for your feedback')
+			return render_template('feedback.html', message='Thank you for your feedback.')
 		except Exception as e:
 			# Handle the exception, you can log the error or return an error message
 			return render_template('feedback.html', message='Unable to save your feedback.')
