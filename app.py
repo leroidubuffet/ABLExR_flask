@@ -86,7 +86,7 @@ def new_session():
 df_s = get_s_data()
 df_s['session_id'] = df_s['session_id'].astype(int)
 
-print(df_s.columns)
+print(df_s.columns) # DEBUG
 
 df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
 
