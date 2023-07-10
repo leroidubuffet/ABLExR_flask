@@ -36,21 +36,30 @@ wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
 wk_s = gs.get_worksheet(1) 		# session spreadsheet
 wk_f = gs.get_worksheet(2) 		# feedback spreadsheet
 
+
+def get_last_added_wk(gs):
+	worksheets = gs.worksheets()    
+	if worksheets:
+		return worksheets[-1]
+	else:
+		return None
+
+
 def get_wk_by_name(name):
-    try:
-        return gs.worksheet(name)
-    except gspread.exceptions.WorksheetNotFound:
-        return None
-    
+	try:
+		return gs.worksheet(name)
+	except gspread.exceptions.WorksheetNotFound:
+		return None
+	
 def create_session_wk(id):
-    wk = gs.add_worksheet(str(id), 0, 4)
-    wk.append_row(["session_id", "ethnicity", "reaction_t", "timeStamp"])
-    return wk
+	wk = gs.add_worksheet(str(id), 0, 4)
+	wk.append_row(["session_id", "ethnicity", "reaction_t", "timeStamp"])
+	return wk
 
 def delete_wk(name):
-    wk = get_wk_by_name(name)
-    if wk is not None:
-        gs.del_worksheet(wk)
+	wk = get_wk_by_name(name)
+	if wk is not None:
+		gs.del_worksheet(wk)
 
 def get_rt_data():
 	records = wk_rt.get_all_records()
@@ -79,52 +88,52 @@ df_s = get_s_data()
 df_f = get_f_data()
 
 def add_record(session_id, reaction_t):
-    session_id = str(session_id)  # Convert session_id to string
-    ethnicity = int(session_id[0])
-    id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
-    now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
-    record = [id, ethnicity, reaction_t, now]
-    
-    # Get the worksheet for this session
-    wk = get_wk_by_name(session_id)
-    
-    # If the worksheet doesn't exist, create it
-    if wk is None:
-        wk = create_session_wk(session_id)
-    
-    # Add the record to the worksheet
-    wk.append_row(record)
+	session_id = str(session_id)  # Convert session_id to string
+	ethnicity = int(session_id[0])
+	id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
+	now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+	record = [id, ethnicity, reaction_t, now]
+	
+	# Get the worksheet for this session
+	wk = get_wk_by_name(session_id)
+	
+	# If the worksheet doesn't exist, create it
+	if wk is None:
+		wk = create_session_wk(session_id)
+	
+	# Add the record to the worksheet
+	wk.append_row(record)
 
 def map_ethnicity(code):
-    ethnicity_mapping = {
-        1: 'Black',
-        2: 'Latino',
-        3: 'White'
-    }
-    return ethnicity_mapping.get(code, 'Unknown')
+	ethnicity_mapping = {
+		1: 'Black',
+		2: 'Latino',
+		3: 'White'
+	}
+	return ethnicity_mapping.get(code, 'Unknown')
 
 def add_session(session_id, session_description):
-    ethnicity_code = int(session_id[0])
-    ethnicity = map_ethnicity(ethnicity_code)
-    print("add_session id: ", session_id) # DEBUG
-    record = [session_id, ethnicity, session_description]
-    wk_s.append_row(record, value_input_option='USER_ENTERED')
+	ethnicity_code = int(session_id[0])
+	ethnicity = map_ethnicity(ethnicity_code)
+	print("add_session id: ", session_id) # DEBUG
+	record = [session_id, ethnicity, session_description]
+	wk_s.append_row(record, value_input_option='USER_ENTERED')
 
 def add_feedback(session_id, feedback):
-    try:
-        session_id = str(session_id)
-        ethnicity = int(session_id[0])
-        id = int(session_id[1:])
-        record = [id, ethnicity, feedback]
-        wk_f.append_row(record, value_input_option='USER_ENTERED')
-    except Exception as e:
-        app.logger.error('Error when adding feedback: %s', e)
+	try:
+		session_id = str(session_id)
+		ethnicity = int(session_id[0])
+		id = int(session_id[1:])
+		record = [id, ethnicity, feedback]
+		wk_f.append_row(record, value_input_option='USER_ENTERED')
+	except Exception as e:
+		app.logger.error('Error when adding feedback: %s', e)
 
 
 def validate_session_id(session_id):
-    if not session_id.isdigit() or len(session_id) != 4:
-        return False
-    return True
+	if not session_id.isdigit() or len(session_id) != 4:
+		return False
+	return True
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -188,17 +197,16 @@ def new_session():
 
 	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted)
 
-
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s['session_id'] = df_s['session_id'].astype(int)
 
 def inverse_ethnicity_mapping(ethnicity):
-    reverse_ethnicity_mapping = {
-        'Black': '1',
-        'Latino': '2',
-        'White': '3'
-    }
-    return reverse_ethnicity_mapping.get(ethnicity, 'Unknown')
+	reverse_ethnicity_mapping = {
+		'Black': '1',
+		'Latino': '2',
+		'White': '3'
+	}
+	return reverse_ethnicity_mapping.get(ethnicity, 'Unknown')
 print(df_s.columns)
 
 df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
@@ -247,7 +255,7 @@ def render_seaborn_chart():
 	# Convert the 'session_ID' and 'ethnicity' columns to integer
 	# Remove the leading underscore and convert to integer
 	# df_rt['session_ID_int'] = df_rt['session_ID'].str[1:].astype(int)
-	df_rt['session_id_int'] = df_rt['session_id'].astype(int) # REMOVE
+	df_rt['session_id_int'] = df_rt['session_id'].astype(int) # REMOVE?
 	df_rt['ethnicity'] = df_rt['ethnicity'].astype(int)
 
 	# Map the ethnicity numbers to their corresponding names
@@ -329,15 +337,15 @@ def render_seaborn_chart():
 
 @app.route('/experience_menu')
 def experience_menu():
-    # Retrieve the last active session_id from the Google Spreadsheet
-    df_s = get_s_data()
-    if not df_s.empty:
-        last_session_id = df_s['session_id'].iloc[-1]
-        session['session_id'] = int(last_session_id)
-        print("Experience.Session ID:", last_session_id)  # DEBUG
-    else:
-        print("No sessions found.")  #  DEBUG
-    return render_template('experience_menu.html')
+	# Retrieve the last active session_id from the Google Spreadsheet
+	df_s = get_s_data()
+	if not df_s.empty:
+		last_session_id = df_s['session_id'].iloc[-1]
+		session['session_id'] = int(last_session_id)
+		print("Experience.Session ID:", last_session_id)  # DEBUG
+	else:
+		print("No sessions found.")  #  DEBUG
+	return render_template('experience_menu.html')
 
 @app.route('/waiting_room')
 def waiting_room():
@@ -364,20 +372,20 @@ def video():
 
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
-    data = request.get_json()
-    print('Data:', data) # DEBUG
-    response_time = round(float(data['timestamp']), 2)
-    session_id = session['session_id']  # Get the session_id from the session
-    print("Save response time.Session ID:", session_id)  #  DEBUG
+	data = request.get_json()
+	print('Data:', data) # DEBUG
+	response_time = round(float(data['timestamp']), 2)
+	session_id = session['session_id']  # Get the session_id from the session
+	print("Save response time.Session ID:", session_id)  #  DEBUG
 
-    try:
-        # Add the record to the DataFrame and Google Spreadsheet
-        add_record(session_id, response_time)
-        return 'Time saved'
-    except Exception as e:
-        # Handle the exception, you can log the error or return an error message
-        app.logger.error('Error when saving response time: %s', e)
-        return 'Unable to save your time.'
+	try:
+		# Add the record to the DataFrame and Google Spreadsheet
+		add_record(session_id, response_time)
+		return 'Time saved'
+	except Exception as e:
+		# Handle the exception, you can log the error or return an error message
+		app.logger.error('Error when saving response time: %s', e)
+		return 'Unable to save your time.'
 	
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
