@@ -50,10 +50,24 @@ def delete_wk(name):
 	if wk is not None:
 		gs.del_worksheet(wk)
 
+def get_rt_data_for_session(session_id):
+    # Get the worksheet for this session
+    wk = get_wk_by_name(session_id)
+    
+    # If the worksheet doesn't exist, return an empty DataFrame
+    if wk is None:
+        return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
+    
+    # If the worksheet exists, get all records and return as a DataFrame
+    records = wk.get_all_records()
+    if records:
+        return pd.DataFrame(records)
+    else:
+        return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
+
 def get_rt_data():
 	records = wk_rt.get_all_records()
 	if records:
-		print('pd: ', records) # DEBUG
 		return pd.DataFrame(records)
 	else:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
@@ -96,7 +110,6 @@ def add_record(session_id, reaction_t):
 def add_session(session_id, session_description):
 	ethnicity_code = int(session_id[0])
 	ethnicity = map_ethnicity(ethnicity_code)
-	print("add_session id: ", session_id) # DEBUG
 	record = [session_id, ethnicity, session_description]
 	wk_s.append_row(record, value_input_option='USER_ENTERED')
 
