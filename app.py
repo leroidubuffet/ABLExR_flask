@@ -124,7 +124,6 @@ def experience_menu():
 	if not df_s.empty:
 		last_session_id = df_s['session_id'].iloc[-1]
 		session['session_id'] = int(last_session_id)
-		print("Experience.Session ID:", last_session_id)  # DEBUG
 	else:
 		print("No sessions found.")  #  DEBUG
 	return render_template('experience_menu.html')
@@ -142,7 +141,6 @@ def ar_vr():
 
 	# Convert the int64 to a regular int before storing it in the session
 	session['session_id'] = int(session_id)
-	print("AR/VR.Session ID:", session_id)  #  DEBUG
 	
 	return render_template('ar_vr.html', pairing_id=session_id)
 
@@ -156,7 +154,6 @@ def save_responsetime():
 	print('Data:', data) # DEBUG
 	response_time = round(float(data['timestamp']), 2)
 	session_id = session['session_id']  # Get the session_id from the session
-	print("Save response time.Session ID:", session_id)  #  DEBUG
 
 	try:
 		# Add the record to the DataFrame and Google Spreadsheet
@@ -172,8 +169,6 @@ def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
 		session_id = session.get('session_id')
-		print("Feedack.Session ID:", session_id)  #  DEBUG
-		print("Feedack.Feedback:", feedback)  #  DEBUG
 
 		try:
 			# Add the feedback to the Google Sheet
