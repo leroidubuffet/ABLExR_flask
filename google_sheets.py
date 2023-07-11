@@ -103,9 +103,9 @@ def add_session(session_id, session_description):
 def add_feedback(session_id, feedback):
 	try:
 		session_id = str(session_id)
-		ethnicity = int(session_id[0])
-		id = int(session_id[1:])
-		record = [id, ethnicity, feedback]
+		ethnicity_code = int(session_id[0])
+		ethnicity = map_ethnicity(ethnicity_code)
+		record = [session_id, ethnicity, feedback]
 		wk_f.append_row(record, value_input_option='USER_ENTERED')
 	except Exception as e:
 		app.logger.error('Error when adding feedback: %s', e)
