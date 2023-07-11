@@ -4,6 +4,7 @@ import pandas as pd
 import gspread
 from datetime import datetime
 
+
 credentials = {
   "type": "service_account",
   "project_id": "tidy-gravity-349514",
@@ -50,6 +51,7 @@ def delete_wk(name):
 def get_rt_data():
 	records = wk_rt.get_all_records()
 	if records:
+		print('pd: ', records) # DEBUG
 		return pd.DataFrame(records)
 	else:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
