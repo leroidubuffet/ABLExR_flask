@@ -16,7 +16,7 @@ import pandas as pd
 import numpy as np
 
 # App libraries
-from chart import render_seaborn_chart as chart_render_seaborn_chart
+from chart import chart_render_seaborn_chart
 from google_sheets import get_s_data, add_record, add_session, add_feedback, get_last_added_wk, get_wk_by_name, create_session_wk, get_rt_data, get_s_data, get_f_data
 from utils import map_ethnicity, inverse_ethnicity_mapping, validate_session_id
 
@@ -115,7 +115,8 @@ def analyze_session():
 
 @app.route('/analysis/<session_id>', methods=['GET', 'POST'])
 def render_seaborn_chart(session_id):
-	return chart_render_seaborn_chart(request)
+    # Now session_id is a string representing the session ID
+    return chart_render_seaborn_chart(session_id)
 
 @app.route('/experience_menu')
 def experience_menu():

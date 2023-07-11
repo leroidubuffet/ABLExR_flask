@@ -65,12 +65,16 @@ def get_rt_data_for_session(session_id):
     else:
         return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
 
-def get_rt_data():
-	records = wk_rt.get_all_records()
-	if records:
-		return pd.DataFrame(records)
-	else:
-		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
+def get_rt_data(session_id):
+    print(f"Getting data for session_id: {session_id}")  # Add this line
+    wk = gs.worksheet(session_id)
+    records = wk.get_all_records()
+    if records:
+        return pd.DataFrame(records)
+    else:
+        return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
+
+
 
 def get_s_data():
 	records = wk_s.get_all_records()
@@ -86,7 +90,6 @@ def get_f_data():
 	else:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'feedback'])
 
-df_rt = get_rt_data()
 df_s = get_s_data()
 df_f = get_f_data()
 
