@@ -173,6 +173,7 @@ def feedback():
 		feedback = request.form['feedback']
 		session_id = session.get('session_id')
 		print("Feedack.Session ID:", session_id)  #  DEBUG
+		print("Feedack.Feedback:", feedback)  #  DEBUG
 
 		try:
 			# Add the feedback to the Google Sheet

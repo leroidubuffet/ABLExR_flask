@@ -5,7 +5,7 @@ import numpy as np
 import io
 import base64
 from flask import render_template
-from google_sheets import get_rt_data  # Assuming data.py is where get_rt_data is defined
+from google_sheets import get_rt_data
 
 def render_seaborn_chart(session_id):
 	if session_id.method == 'POST':
