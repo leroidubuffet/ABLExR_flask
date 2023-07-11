@@ -10,7 +10,7 @@ from google_sheets import get_rt_data  # Assuming data.py is where get_rt_data i
 def render_seaborn_chart(session_id):
 	if session_id.method == 'POST':
 		dimension = session_id.form['dimension']
-		printf('session_id at render:', session_id)
+		print('session_id at render:', session_id)
 	else:
 		dimension = 'Anger'	
 		

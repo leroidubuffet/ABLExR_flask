@@ -15,7 +15,7 @@
 <body>
 	<div class="dropdown-and-session-info">
 		<div class="dropdown-container">
-			<form id="dimensionForm" action="/analysis" method="post">
+			<form id="dimensionForm" action="/analysis/{{ session_id }}" method="post">
 				<label for="dimension">Select Dimension:</label>
 				<select id="dimension" name="dimension" onchange="submitForm()">
 					<option selected disabled>Select a dimension</option>
