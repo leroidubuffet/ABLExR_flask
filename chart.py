@@ -10,12 +10,13 @@ from constants import ETHNICITY_MAPPING, COLOR_PALETTE
 
 def load_data(session_id):
     # Load hume data from csv
-    officer_df = pd.read_csv('datasets/OF_language.csv')
-    driver_df = pd.read_csv('datasets/DF_language.csv')
-    scene_df = pd.read_csv('datasets/O+D_F_language.csv')
+    df_officer = pd.read_csv('datasets/OF_language.csv')
+    df_driver = pd.read_csv('datasets/DF_language.csv')
+    df_scene = pd.read_csv('datasets/O+D_F_language.csv')
 
     # Load reaction times data from the Google Spreadsheet
     df_rt = get_rt_data()
+    print('df_rt', df_rt)
 
     # Filter df_rt to only include rows where the session_id matches the session_id passed to the function
     df_rt = df_rt.loc[df_rt['session_id'] == session_id]
@@ -27,7 +28,7 @@ def load_data(session_id):
     # Map the ethnicity numbers to their corresponding names
     df_rt['ethnicity'] = df_rt['ethnicity'].map(ETHNICITY_MAPPING)
 
-    return officer_df, driver_df, scene_df, df_rt
+    return df_officer, df_driver, df_scene, df_rt
 
 def render_seaborn_chart(session_id, desired_ethnicity='Black'):
     if session_id.method == 'POST':
@@ -36,7 +37,7 @@ def render_seaborn_chart(session_id, desired_ethnicity='Black'):
     else:
         dimension = 'Anger'
 
-    officer_df, driver_df, scene_df, df_rt = load_data(session_id)
+    df_officer, df_driver, df_scene, df_rt = load_data(session_id)
 
     # Filter the DataFrame to include only the desired ethnicity
     interventions_df = df_rt[df_rt['ethnicity'] == desired_ethnicity]
@@ -46,16 +47,16 @@ def render_seaborn_chart(session_id, desired_ethnicity='Black'):
     plt.xlim(0, 180)  # Set x-axis limits to 0 and 180
 
     # Plot the Scene data
-    scene_line = sns.lineplot(data=scene_df, x='BeginTime', y=dimension, color='green')
+    scene_line = sns.lineplot(data=df_scene, x='BeginTime', y=dimension, color='green')
 
     # Plot the Officer data
-    officer_line = sns.lineplot(data=officer_df, x='BeginTime', y=dimension, color=COLOR_PALETTE[0])
+    officer_line = sns.lineplot(data=df_officer, x='BeginTime', y=dimension, color=COLOR_PALETTE[0])
 
     # Plot the Driver data
-    driver_line = sns.lineplot(data=driver_df, x='BeginTime', y=dimension, color=COLOR_PALETTE[1])
+    driver_line = sns.lineplot(data=df_driver, x='BeginTime', y=dimension, color=COLOR_PALETTE[1])
 
     # Interpolate the dimension value of the scene at the response times
-    response_dimension = np.interp(interventions_df['reaction_t'], scene_df['BeginTime'], scene_df[dimension])
+    response_dimension = np.interp(interventions_df['reaction_t'], df_scene['BeginTime'], df_scene[dimension])
 
     # Add the scatter plot on top of the line plot
     colors = {desired_ethnicity: 'black'}
