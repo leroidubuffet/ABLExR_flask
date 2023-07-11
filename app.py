@@ -48,14 +48,13 @@ def new_session():
 	ethnicities = ['random', 'black', 'latino', 'white']
 	session_id = None
 	form_submitted = False
+	error = None
 
 	if request.method == 'POST':
 		form_submitted = True
 		race_digit = None
 		ethnicity = request.form['ethnicity']
 		session_description = request.form['session_description']
-		print("ethnicity:", ethnicity)  # DEBUG
-		print("Session Description:", session_description)  # DEBUG
 		if ethnicity == 'random':
 			ethnicity_id = random.choice([1, 2, 3])
 			race_digit = str(ethnicity_id)
@@ -70,16 +69,19 @@ def new_session():
 				race_digit = str(ethnicity_id)
 
 		user_session_id = request.form['session_id']
-		print("User Session ID:", user_session_id)  # DEBUG
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
 			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
-			print("Session ID:", session_id)  #  DEBUG
 
-			# Save the record to Google Spreadsheet
-			add_session(session_id, session_description)
-			create_session_wk(session_id)
+			# Check if the session already exists
+			if get_wk_by_name(session_id) is not None:
+				error = 'Session ID already exists. Please try a different ID.'
+				return render_template('new_session.html', session_id=session_id, ethnicities=ethnicities, error=error)
+			else:
+				# Save the record to Google Spreadsheet
+				add_session(session_id, session_description)
+				create_session_wk(session_id)
 
-	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted)
+	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted, error=error)
 
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s = get_s_data()
@@ -108,6 +110,7 @@ def analyze_session():
 				error = 'That session ID does not exist.'
 			else:
 				return redirect(url_for('render_seaborn_chart'))        
+
 	return render_template('analyze_session.html', error=error)
 
 @app.route('/analysis/<session_id>', methods=['GET', 'POST'])

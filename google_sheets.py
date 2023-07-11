@@ -32,9 +32,11 @@ def get_last_added_wk(gs):
 	else:
 		return None
 
-def get_wk_by_name(name):
+def get_wk_by_name(session_id):
 	try:
-		return gs.worksheet(name)
+		worksheet = gs.worksheet(session_id)
+		print(f"Worksheet for session_id {session_id}: {worksheet}")
+		return gs.worksheet(session_id)
 	except gspread.exceptions.WorksheetNotFound:
 		return None
 	

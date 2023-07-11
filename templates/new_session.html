@@ -17,10 +17,13 @@
                 {% endfor %}
             </select>
             <input type="text" autocomplete="off" name="session_description" placeholder="Session Description">
-            <button id="submitBtn" type="submit" {% if form_submitted %}disabled{% endif %}>Start Session</button>
+			<button id="submitBtn" type="submit">Start Session</button>
         </form>
+		{% if error %}
+		<h2>{{ error }}</h2>
+        {% endif %}
         {% if session_id %}
-        <p>Your session ID is:</p>
+        <p>Session ID is:</p>
         <h1>{{ session_id }}</h1>
         {% endif %}
         {% if form_submitted %}
