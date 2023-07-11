@@ -13,7 +13,6 @@ http://localhost:5000/trainee1
 http://localhost:5000/trainee2
 
 trainees meten a mano la session
-fix chart
 fix analyze session
 reconectar chart
 reconnect matplotlib
@@ -27,15 +26,17 @@ Necesitamos delete ws?
 is session ok for distributed sessions?
 ethnicity y session id. Get session id from wk name remove session_id column YES
 delete monitor.html
+x fix chart lines start and end. It's ok the voiceover is out
 x broken on dimension change
 
 Miguel:
-remove session_id column from session wk. Dejar ethnicity? Ethnicity no coded OK
 trainees: meter a mano la sesión
 video a github y video.js
 credenciales seguras + password. Secret en heroku. Mandar mensaje a Miguel
 añadir visualizar quienes han terminado el vídeo / quien está conectado 
 qué usar para colocar los puntos. Ver. Añadir algún agregado más
+x Ethnicity no coded OK
+x remove session_id column from session wk
 x reunión mañana YES
 x añadir acceso a session data al trainer
 
