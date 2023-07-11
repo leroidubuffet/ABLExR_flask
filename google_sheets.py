@@ -78,10 +78,10 @@ df_f = get_f_data()
 
 def add_record(session_id, reaction_t):
 	session_id = str(session_id)  # Convert session_id to string
-	ethnicity = int(session_id[0])
-	id = int(session_id[1:])  # Extract digits 1 to 3 from session_id
+	ethnicity_code = int(session_id[0])
+	ethnicity = map_ethnicity(ethnicity_code)
 	now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
-	record = [id, ethnicity, reaction_t, now]
+	record = [ethnicity, reaction_t, now]
 	
 	# Get the worksheet for this session
 	wk = get_wk_by_name(session_id)
