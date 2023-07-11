@@ -40,7 +40,7 @@ def get_wk_by_name(name):
 	
 def create_session_wk(id):
 	wk = gs.add_worksheet(str(id), 0, 4)
-	wk.append_row(["session_id", "ethnicity", "reaction_t", "timeStamp"])
+	wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
 	return wk
 
 def delete_wk(name):

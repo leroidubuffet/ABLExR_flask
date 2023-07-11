@@ -69,8 +69,6 @@ def new_session():
 			if ethnicity_id is not None:
 				race_digit = str(ethnicity_id)
 
-		print("Race Digit:", race_digit)  # DEBUG
-
 		user_session_id = request.form['session_id']
 		print("User Session ID:", user_session_id)  # DEBUG
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
@@ -79,14 +77,13 @@ def new_session():
 
 			# Save the record to Google Spreadsheet
 			add_session(session_id, session_description)
+			create_session_wk(session_id)
 
 	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted)
 
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s = get_s_data()
 df_s['session_id'] = df_s['session_id'].astype(int)
-
-print(df_s.columns) # DEBUG
 
 df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
 
