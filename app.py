@@ -80,8 +80,12 @@ def new_session():
 				# Save the record to Google Spreadsheet
 				add_session(session_id, session_description)
 				create_session_wk(session_id)
+		else:
+			error = 'Session ID must be a 3 digit number.'
+			return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=False, error=error)
 
 	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted, error=error)
+
 
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s = get_s_data()

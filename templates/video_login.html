@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video login</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <br>Introduce the Session ID provided by your trainer.
+        <form method="post">
+            <input type="text" autocomplete="off" maxlength="4" name="session_id" placeholder="Enter Session ID">
+            <button type="submit">Submit</button>
+        </form>
+		{% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
