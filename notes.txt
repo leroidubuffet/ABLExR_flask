@@ -5,15 +5,10 @@ debug for updates
     flask --app app.py --debug run
 
 
-see trainer
-http://localhost:5000/monitor
-
-see trainee
-http://localhost:5000/trainee1
-http://localhost:5000/trainee2
 
 trainees meten a mano la session
-fix analyze session
+fix analyze session dimension change
+check sessoin analysis ethnicity source. It should be sessions
 reconectar chart
 reconnect matplotlib
 leading zeroes
@@ -26,7 +21,10 @@ Necesitamos delete ws?
 is session ok for distributed sessions?
 ethnicity y session id. Get session id from wk name remove session_id column YES
 delete monitor.html
+añadir footer o header de navegación
+eliminar wk reactions
 x fix chart lines start and end. It's ok the voiceover is out
+x analyze session does not find sheets
 x broken on dimension change
 
 Miguel:

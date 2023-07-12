@@ -91,31 +91,28 @@ df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
 
 @app.route('/analyze_session', methods=['GET', 'POST'])
 def analyze_session():
-	error = None
-	if request.method == 'POST':
-		session_id = request.form['session_id']
-		print("Analyza session.Session ID:", session_id)  #  DEBUG
+    error = None
+    if request.method == 'POST':
+        session_id = request.form['session_id']
+        print('Form request session ID: ', session_id)
 
-		if not session_id.isdigit() or len(session_id) != 4:
-			error = 'Insert a four digit number please.'
-		else:
-			# Split the session_id into ethnicity and session_id
-			ethnicity = int(session_id[0])
-			session_id = int(session_id[1:])
+        if not session_id.isdigit() or len(session_id) != 4:
+            error = 'Insert a four digit number please.'
+        else:
+            # Query the table to check if the session ID exists
+            session_exists = get_wk_by_name(session_id)
 
-			# Query the table to check if the session ID exists
-			session_exists = df_s[(df_s['session_id'] == session_id) & (df_s['ethnicity'] == ethnicity)].shape[0] > 0
+            if not session_exists:
+                error = 'That session ID does not exist.'
+            else:
+                print("Analyze session.Session ID:", session_id)  #  DEBUG
+                return redirect(url_for('render_seaborn_chart', session_id=session_id))        
 
-			if not session_exists:
-				error = 'That session ID does not exist.'
-			else:
-				return redirect(url_for('render_seaborn_chart'))        
+    return render_template('analyze_session.html', error=error)
 
-	return render_template('analyze_session.html', error=error)
 
 @app.route('/analysis/<session_id>', methods=['GET', 'POST'])
 def render_seaborn_chart(session_id):
-    # Now session_id is a string representing the session ID
     return chart_render_seaborn_chart(session_id)
 
 @app.route('/experience_menu')
