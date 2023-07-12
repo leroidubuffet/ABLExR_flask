@@ -85,6 +85,7 @@ def new_session():
 
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s = get_s_data()
+print('df_s at 88: ', df_s)
 df_s['session_id'] = df_s['session_id'].astype(int)
 
 df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
@@ -94,7 +95,6 @@ def analyze_session():
 	error = None
 	if request.method == 'POST':
 		session_id = request.form['session_id']
-		print('Form request session ID: ', session_id)
 
 		if not session_id.isdigit() or len(session_id) != 4:
 			error = 'Insert a four digit number please.'
@@ -121,14 +121,27 @@ def render_seaborn_chart(session_id):
 
 @app.route('/experience_menu')
 def experience_menu():
-	# Retrieve the last active session_id from the Google Spreadsheet
-	df_s = get_s_data()
-	if not df_s.empty:
-		last_session_id = df_s['session_id'].iloc[-1]
-		session['session_id'] = int(last_session_id)
-	else:
-		print("No sessions found.")  #  DEBUG
 	return render_template('experience_menu.html')
+
+@app.route('/video_login', methods=['GET', 'POST'])
+def video_login():
+	error = None
+	if request.method == 'POST':
+		session_id = request.form['session_id']
+
+		if not session_id.isdigit() or len(session_id) !=4:
+			error = 'Insert a four digit number please.'
+			# Query the table to check if the session ID exists
+		else:
+			session_exists = get_wk_by_name(session_id)
+			print('session_exists: ', session_exists)
+
+			if not session_exists:
+				error = 'That session ID does not exist.'
+			else:
+				return redirect(url_for('waiting_room', session_id=session_id))
+
+	return render_template('video_login.html', error=error)
 
 @app.route('/waiting_room')
 def waiting_room():
