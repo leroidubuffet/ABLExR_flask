@@ -22,7 +22,7 @@ def load_data(session_id):
 
 	return df_officer, df_driver, df_scene, df_rt, ethnicity
 
-def chart_render_seaborn_chart(session_id, dimension='Anger'):
+def chart_render_seaborn_chart(session_id, dimension):
 	df_officer, df_driver, df_scene, df_rt, ethnicity = load_data(session_id)
 
 	plt.figure(figsize=(15, 5))
