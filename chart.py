@@ -18,7 +18,7 @@ def load_data(session_id):
 	df_rt = get_rt_data_for_session(session_id)
 
 	# Extract the ethnicity from the df_rt DataFrame
-	ethnicity = df_rt['ethnicity'].iloc[0] if not df_rt.empty else 'Unknown'
+	ethnicity = df_rt['ethnicity'].iloc[0] if not df_rt.empty else 'Not defined'
 
 	return df_officer, df_driver, df_scene, df_rt, ethnicity
 
