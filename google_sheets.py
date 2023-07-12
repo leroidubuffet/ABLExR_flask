@@ -35,7 +35,6 @@ def get_last_added_wk(gs):
 def get_wk_by_name(session_id):
 	try:
 		worksheet = gs.worksheet(session_id)
-		print(f"Worksheet for session_id {session_id}: {worksheet}")
 		return gs.worksheet(session_id)
 	except gspread.exceptions.WorksheetNotFound:
 		return None
@@ -74,11 +73,8 @@ def get_rt_data(session_id):
     else:
         return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
 
-
-
 def get_s_data():
 	records = wk_s.get_all_records()
-	print("get_s_data records: ", records) # DEBUG
 	if records:
 		return pd.DataFrame(records)
 	else:

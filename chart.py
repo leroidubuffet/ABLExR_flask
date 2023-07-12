@@ -39,10 +39,6 @@ def chart_render_seaborn_chart(session_id, dimension):
 	driver_line = sns.lineplot(data=df_driver, x='BeginTime', y=dimension, color=COLOR_PALETTE[1])
 
 	# Interpolate the dimension value of the scene at the response times
-	print(df_rt['reaction_t'].dtypes)
-	print(df_rt['reaction_t'].unique())
-	print(df_scene['BeginTime'].dtypes)
-	print(df_scene['BeginTime'].unique())
 	df_rt['reaction_t'] = pd.to_numeric(df_rt['reaction_t'], errors='coerce')
 
 	response_dimension = np.interp(df_rt['reaction_t'], df_scene['BeginTime'], df_scene[dimension])
