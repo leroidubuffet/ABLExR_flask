@@ -89,6 +89,7 @@ def new_session():
 
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s = get_s_data()
+print('df_s at 88: ', df_s)
 df_s['session_id'] = df_s['session_id'].astype(int)
 
 df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
@@ -116,10 +117,8 @@ def analyze_session():
 
 @app.route('/analysis/<session_id>', methods=['GET', 'POST'])
 def render_seaborn_chart(session_id):
-	dimension = 'Anger'  # Default value
 	if request.method == 'POST':
-		dimension = request.form['dimension']
-		print("Dimension at analysis: ", dimension) # DEBUG
+		dimension = request.form.get('dimension')
 	else:
 		dimension = 'Anger'
 	return chart_render_seaborn_chart(session_id, dimension=dimension)
