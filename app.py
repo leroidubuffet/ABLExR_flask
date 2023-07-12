@@ -176,7 +176,7 @@ def feedback():
 			# Add the feedback to the Google Sheet
 			add_feedback(session_id, feedback)
 
-			return render_template('feedback.html', message='Thank you for your feedback.')
+			return render_template('feedback.html', message='Thank you for your feedback.', form_submitted=True)
 		except Exception as e:
 			# Handle the exception, you can log the error or return an error message
 			return render_template('feedback.html', message='Unable to save your feedback.')
