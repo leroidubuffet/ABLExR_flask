@@ -5,10 +5,12 @@ debug for updates
     flask --app app.py --debug run
 
 video hosting
+add error check on chart data feed
+what is the scene line source?
+session id vs session tag
 check session analysis ethnicity source. It should be sessions
 reconectar chart
 reconnect matplotlib
-ethnicity value across wks
 fix top margin analysis
 dividir código
 corregir funciones gs
@@ -18,7 +20,8 @@ ethnicity y session id. Get session id from wk name remove session_id column YES
 delete monitor.html
 añadir footer o header de navegación
 eliminar wk reactions
-leading zeroes
+x leading zeroes
+x ethnicity value across wks
 x fix analyze session dimension change
 x fix chart lines start and end. It's ok the voiceover is out
 x trainees meten a mano la session
