@@ -1,40 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Session analysis</title>
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-	<style>
-
-	</style>
-	<script>
-		function submitForm() {
-			document.getElementById("dimensionForm").submit();
-		}
-	</script>
+    <title>Session analysis</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
+    <style>
+    </style>
+    <script>
+        function submitForm() {
+            document.getElementById("dimensionForm").submit();
+        }
+    </script>
 </head>
 <body>
-	<div class="dropdown-and-session-info">
-		<div class="dropdown-container">
-			<form id="dimensionForm" action="/analysis/{{ session_id }}" method="post">
-				<select id="dimension" name="dimension" onchange="submitForm()">
-					<option selected disabled>Select a dimension</option>
-					<option value="Anger">Anger</option>
-					<option value="Distress">Distress</option>
-					<option value="Anxiety">Anxiety</option>
-				</select>            
-			</form>
-			<br>
-			<a href="/">Home</a>
-			<a href="https://docs.google.com/spreadsheets/d/12kdXMixqPOi5dwPBsxawfAe2asPIWhMyfl51is0jZyc/edit?usp=sharing"target="_blank">Training data</a>
-		</div>
-		<div class="session-info">
-			<p>Session ID: {{ session_id }}</p>
-			<p>Ethnicity: {{ ethnicity }}</p>
-		</div>
-	</div>
-	<br>
-	<img src="data:image/png;base64,{{ chart_image }}">
-	<br>
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/v=4_EO4RwABbA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-	<!-- <iframe width="800" height="600" src="https://www.youtube.com/embed/AyfxHCbGGZk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> -->
+    <div class="dropdown-and-session-info">
+        <div class="dropdown-container">
+            <form id="dimensionForm" action="/analysis/{{ session_id }}" method="post">
+                <select id="dimension" name="dimension" onchange="submitForm()">
+                    <option selected disabled>Select a dimension</option>
+                    <option value="Anger">Anger</option>
+                    <option value="Distress">Distress</option>
+                    <option value="Anxiety">Anxiety</option>
+                </select>            
+            </form>
+            <br>
+            <a href="/">Home</a>
+            <a href="https://docs.google.com/spreadsheets/d/12kdXMixqPOi5dwPBsxawfAe2asPIWhMyfl51is0jZyc/edit?usp=sharing"target="_blank">Training data</a>
+        </div>
+        <div class="session-info">
+            <p>Session ID: {{ session_id }}</p>
+            <p>Ethnicity: {{ ethnicity }}</p>
+        </div>
+    </div>
+    <br>
+    <br>
+    <img src="data:image/png;base64,{{ chart_image }}">
+    <br>
+    <video id="my-video" class="video-js" controls preload="auto" width="800" height="600"
+    data-setup="{}">
+        <source src="https://www.yagobolivar.es/hume_audio.mp4" type='video/mp4'>
+        <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+        </p>
+    </video>
+</body>
 </html>
