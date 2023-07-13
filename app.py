@@ -29,6 +29,7 @@ app.logger.setLevel(logging.DEBUG) # DEBUG
 def index():
 	return render_template('index.html')
 
+###		Trainer routes		###
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
@@ -89,7 +90,6 @@ def new_session():
 
 # Convert the 'session_id' and 'ethnicity' columns to integer
 df_s = get_s_data()
-print('df_s at 88: ', df_s)
 df_s['session_id'] = df_s['session_id'].astype(int)
 
 df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
@@ -123,6 +123,7 @@ def render_seaborn_chart(session_id):
 		dimension = 'Anger'
 	return chart_render_seaborn_chart(session_id, dimension=dimension)
 
+###		Trainee routes		### 
 @app.route('/experience_menu')
 def experience_menu():
 	return render_template('experience_menu.html')
@@ -138,7 +139,6 @@ def video_login():
 			# Query the table to check if the session ID exists
 		else:
 			session_exists = get_wk_by_name(session_id)
-			print('session_exists: ', session_exists)
 
 			if not session_exists:
 				error = 'That session ID does not exist.'
@@ -170,7 +170,6 @@ def video():
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
 	data = request.get_json()
-	print('Data:', data) # DEBUG
 	response_time = round(float(data['timestamp']), 2)
 	session_id = session['session_id']  # Get the session_id from the session
 
