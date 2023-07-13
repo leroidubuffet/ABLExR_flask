@@ -147,9 +147,9 @@ def video_login():
 
 	return render_template('video_login.html', error=error)
 
-@app.route('/waiting_room')
-def waiting_room():
-	return render_template('waiting_room.html')
+@app.route('/waiting_room/<session_id>')
+def waiting_room(session_id):
+	return render_template('waiting_room.html', session_id=session_id)
 
 @app.route('/ar_vr')
 def ar_vr():
