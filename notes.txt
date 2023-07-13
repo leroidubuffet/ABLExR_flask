@@ -3,8 +3,12 @@ run with
 
 debug for updates
     flask --app app.py --debug run
+close
+	kill -9 $(lsof -t -i:5000)
 
-video hosting
+video hosting. Github public repo
+final audio
+session number / session ID
 add error check on chart data feed
 what is the scene line source?
 session id vs session tag
@@ -14,12 +18,12 @@ reconnect matplotlib
 fix top margin analysis
 dividir código
 corregir funciones gs
-Necesitamos delete ws?
 is session ok for distributed sessions?
-ethnicity y session id. Get session id from wk name remove session_id column YES
 delete monitor.html
 añadir footer o header de navegación
 eliminar wk reactions
+x ethnicity y session id. Get session id from wk name remove session_id column YES
+x saving reaction_t on last wk? Fix session data. Pass session id as url parameter instead
 x leading zeroes
 x ethnicity value across wks
 x fix analyze session dimension change
