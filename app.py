@@ -143,6 +143,7 @@ def video_login():
 			if not session_exists:
 				error = 'That session ID does not exist.'
 			else:
+				session['session_id'] = session_id  # Set the session_id in the session object
 				return redirect(url_for('waiting_room', session_id=session_id))
 
 	return render_template('video_login.html', error=error)
@@ -171,8 +172,10 @@ def video():
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
 	data = request.get_json()
+	print('data: ', data)
+	session_id = session.get('session_id')  # Get the session_id from the session object
 	response_time = round(float(data['timestamp']), 2)
-	session_id = data['session_id']  # Get the session_id from the request data
+	print("session_id: ", session_id)
 
 	try:
 		# Add the record to the DataFrame and Google Spreadsheet
@@ -187,7 +190,7 @@ def save_responsetime():
 def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
-		session_id = session.get('session_id')
+		session_id = session.get('session_id')  # Get the session_id from the session object
 
 		try:
 			# Add the feedback to the Google Sheet
@@ -200,6 +203,7 @@ def feedback():
 	else:
 		# Render the feedback form
 		return render_template('feedback.html')
+
 
 if __name__ == '__main__':
 	socketio.run(app)

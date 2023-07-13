@@ -12,45 +12,47 @@ function onPlayerStateChange(event) {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     console.log('Default response time saved successfully.');
                     // Redirect to the feedback page after the request has completed
-                    window.location.href = "/feedback";
+                    window.location.href = "/feedback"
                 }
             };
             xhr.send(JSON.stringify({ timestamp: 180 }));
         }
-		window.location.href = "/feedback";
+        else {
+            window.location.href = "/feedback";
+        }
     }
 }
 
 function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        height: '600',
-        width: '800',
-        videoId: '3-kP8i9Lwbg',
-        playerVars: {
-            'controls': 1,
-            'autoplay': 1,
-            'disablekb': 1,
-            'rel': 0,
-            'showinfo': 0,
-            'modestbranding': 1
-        },
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    });
+	player = new YT.Player('player', {
+		height: '600',
+		width: '800',
+		videoId: '3-kP8i9Lwbg',
+		playerVars: {
+			'controls': 1,
+			'autoplay': 1,
+			'disablekb': 1,
+			'rel': 0,
+			'showinfo': 0,
+			'modestbranding': 1
+		},
+		events: {
+			'onReady': onPlayerReady,
+			'onStateChange': onPlayerStateChange
+		}
+	});
 }
 
 function onPlayerReady(event) {
-    // Player is ready, enable the button
-    var interveneButton = document.querySelector('button');
-    interveneButton.disabled = false;
+	// Player is ready, enable the button
+	var interveneButton = document.querySelector('button');
+	interveneButton.disabled = false;
 }
 
 function saveResponsetime(session_id) {
     // Get the current timestamp of the video
     var currentTime = player.getCurrentTime();
-
+    userHasIntervened = true;
     // Send an AJAX request to the server to save the timestamp
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/save_responsetime', true);
@@ -62,5 +64,6 @@ function saveResponsetime(session_id) {
     };
     xhr.send(JSON.stringify({ timestamp: currentTime, session_id: session_id }));
     document.getElementById('intervene-button').disabled = true;
-	userHasIntervened = true;
 }
+
+
