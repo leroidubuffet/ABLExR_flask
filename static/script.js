@@ -47,7 +47,7 @@ function onPlayerReady(event) {
     interveneButton.disabled = false;
 }
 
-function saveResponsetime() {
+function saveResponsetime(session_id) {
     // Get the current timestamp of the video
     var currentTime = player.getCurrentTime();
 
@@ -60,7 +60,7 @@ function saveResponsetime() {
             console.log('Response time saved successfully.');
         }
     };
-    xhr.send(JSON.stringify({ timestamp: currentTime }));
-	document.getElementById('intervene-button').disabled = true;
+    xhr.send(JSON.stringify({ timestamp: currentTime, session_id: session_id }));
+    document.getElementById('intervene-button').disabled = true;
 	userHasIntervened = true;
 }

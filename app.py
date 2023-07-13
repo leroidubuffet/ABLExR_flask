@@ -165,13 +165,14 @@ def ar_vr():
 
 @app.route('/video')
 def video():
-	return render_template('video.html')
+	session_id = request.args.get('session_id')
+	return render_template('video.html', session_id=session_id)
 
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
 	data = request.get_json()
 	response_time = round(float(data['timestamp']), 2)
-	session_id = session['session_id']  # Get the session_id from the session
+	session_id = data['session_id']  # Get the session_id from the request data
 
 	try:
 		# Add the record to the DataFrame and Google Spreadsheet
