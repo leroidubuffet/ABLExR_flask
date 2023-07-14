@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-# Use this notebook to calculate the means between officer and driver
+# Use this script to calculate the means between officer and driver
 
 # Load the data
 df1 = pd.read_csv('../datasets/OF_language.csv')
