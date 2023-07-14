@@ -31,6 +31,33 @@ def get_last_added_wk(gs):
 		return worksheets[-1]
 	else:
 		return None
+	
+def get_ethnicity_by_session_id(session_id):
+    # Get the 'sessions' worksheet
+    worksheet = get_wk_by_name('sessions')
+
+    # If the worksheet is not found, return 'Not defined'
+    if worksheet is None:
+        return 'Sheet not found'
+
+    # Get all records of the worksheet
+    records = worksheet.get_all_records()
+
+    # Convert the records to a DataFrame
+    df = pd.DataFrame.from_records(records)
+
+    # Convert session_id to integer
+    session_id = int(session_id)
+
+    # Find the row with the specific session_id
+    session_data = df[df['session_id'] == session_id]
+
+    # If the session_id is not found, return 'Not defined'
+    if session_data.empty:
+        return 'Session not found'
+
+    # Extract the 'ethnicity' column and return it
+    return session_data['ethnicity'].iloc[0]
 
 def get_wk_by_name(session_id):
 	try:

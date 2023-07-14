@@ -5,7 +5,7 @@ import numpy as np
 import io
 import base64
 from flask import render_template
-from google_sheets import get_rt_data_for_session
+from google_sheets import get_rt_data_for_session, get_ethnicity_by_session_id
 from constants import ETHNICITY_MAPPING, COLOR_PALETTE
 
 def load_data(session_id):
@@ -17,8 +17,8 @@ def load_data(session_id):
 	# Load reaction times data from the Google Spreadsheet
 	df_rt = get_rt_data_for_session(session_id)
 
-	# Extract the ethnicity from the df_rt DataFrame
-	ethnicity = df_rt['ethnicity'].iloc[0] if not df_rt.empty else 'Not defined'
+	# Get the ethnicity from the 'sessions' worksheet
+	ethnicity = get_ethnicity_by_session_id(session_id)
 
 	return df_officer, df_driver, df_scene, df_rt, ethnicity
 
