@@ -6,22 +6,17 @@ debug for updates
 close
 	kill -9 $(lsof -t -i:5000)
 
-video hosting. Github public repo
 final audio
-session number / session ID
-add error check on chart data feed
-what is the scene line source?
-session id vs session tag
-check session analysis ethnicity source. It should be sessions
-reconectar chart
-reconnect matplotlib
 fix top margin analysis
 dividir código
 corregir funciones gs
-is session ok for distributed sessions?
-delete monitor.html
 añadir footer o header de navegación
-eliminar wk reactions
+x check session analysis ethnicity source. It should be sessions
+x session number / session ID
+x session id vs session tag
+x eliminar wk reactions
+x delete monitor.html
+x video hosting. Github public repo
 x ethnicity y session id. Get session id from wk name remove session_id column YES
 x saving reaction_t on last wk? Fix session data. Pass session id as url parameter instead
 x leading zeroes
