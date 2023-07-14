@@ -21,7 +21,7 @@ credentials = {
 # Google Sheets setup
 gc = gspread.service_account_from_dict(credentials)
 gs = gc.open("ABLExR-DATA")		# open document
-wk_rt = gs.get_worksheet(0) 		# reaction time spreadsheet
+wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
 wk_s = gs.worksheet('sessions')	# session spreadsheet
 wk_f = gs.worksheet('feedback') # feedback spreadsheet
 
@@ -33,30 +33,19 @@ def get_last_added_wk(gs):
 		return None
 	
 def get_ethnicity_by_session_id(session_id):
-    # Get the 'sessions' worksheet
     worksheet = get_wk_by_name('sessions')
 
-    # If the worksheet is not found, return 'Not defined'
     if worksheet is None:
         return 'Sheet not found'
 
-    # Get all records of the worksheet
     records = worksheet.get_all_records()
-
-    # Convert the records to a DataFrame
     df = pd.DataFrame.from_records(records)
-
-    # Convert session_id to integer
     session_id = int(session_id)
-
-    # Find the row with the specific session_id
     session_data = df[df['session_id'] == session_id]
 
-    # If the session_id is not found, return 'Not defined'
     if session_data.empty:
         return 'Session not found'
 
-    # Extract the 'ethnicity' column and return it
     return session_data['ethnicity'].iloc[0]
 
 def get_wk_by_name(session_id):
@@ -77,14 +66,11 @@ def delete_wk(name):
 		gs.del_worksheet(wk)
 
 def get_rt_data_for_session(session_id):
-    # Get the worksheet for this session
     wk = get_wk_by_name(session_id)
     
-    # If the worksheet doesn't exist, return an empty DataFrame
     if wk is None:
         return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
     
-    # If the worksheet exists, get all records and return as a DataFrame
     records = wk.get_all_records()
     if records:
         return pd.DataFrame(records)
@@ -92,7 +78,7 @@ def get_rt_data_for_session(session_id):
         return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
 
 def get_rt_data(session_id):
-    print(f"Getting data for session_id: {session_id}")  # Add this line
+    print(f"Getting data for session_id: {session_id}")
     wk = gs.worksheet(session_id)
     records = wk.get_all_records()
     if records:
@@ -118,20 +104,17 @@ df_s = get_s_data()
 df_f = get_f_data()
 
 def add_record(session_id, reaction_t):
-	session_id = str(session_id)  # Convert session_id to string
+	session_id = str(session_id)
 	ethnicity_code = int(session_id[0])
 	ethnicity = map_ethnicity(ethnicity_code)
 	now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
 	record = [ethnicity, reaction_t, now]
 	
-	# Get the worksheet for this session
 	wk = get_wk_by_name(session_id)
 	
-	# If the worksheet doesn't exist, create it
 	if wk is None:
 		wk = create_session_wk(session_id)
 	
-	# Add the record to the worksheet
 	wk.append_row(record)
 
 def add_session(session_id, session_description):
