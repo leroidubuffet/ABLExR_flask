@@ -33,21 +33,23 @@ for column in df.columns:
 df = df.drop(columns=[column for column in df.columns if column.endswith('_1') or column.endswith('_2')])
 
 # Now df contains the mean of the values from the two individuals for each second
-df.to_csv('../datasets/mean_dimensions_new.csv', index=False)
+df.to_csv('../datasets/mean_dimensions.csv', index=False)
 
-plt.figure(figsize=(15, 6))
 
-# Plot for df1
-plt.plot(df1.index.total_seconds(), df1['Anxiety'], label='Person 1', color='blue')
+####	Activate if you want to see the representation of the 3 datasets	####
+# plt.figure(figsize=(15, 6))
 
-# Plot for df2
-plt.plot(df2.index.total_seconds(), df2['Anxiety'], label='Person 2', color='red')
+# # Plot for df1
+# plt.plot(df1.index.total_seconds(), df1['Anxiety'], label='Person 1', color='blue')
 
-# Plot for df (mean values)
-plt.plot(df.index.total_seconds(), df['Anxiety'], label='Mean Values', color='green')
+# # Plot for df2
+# plt.plot(df2.index.total_seconds(), df2['Anxiety'], label='Person 2', color='red')
 
-plt.title('Dimension Over Time')
-plt.xlabel('Time (s)')
-plt.ylabel('Dimension Value')
-plt.legend()  # Display the legend
-plt.show()
+# # Plot for df (mean values)
+# plt.plot(df.index.total_seconds(), df['Anxiety'], label='Mean Values', color='green')
+
+# plt.title('Dimension Over Time')
+# plt.xlabel('Time (s)')
+# plt.ylabel('Dimension Value')
+# plt.legend()  # Display the legend
+# plt.show()
