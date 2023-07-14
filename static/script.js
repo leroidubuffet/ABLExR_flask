@@ -1,8 +1,10 @@
 var player;
 var userHasIntervened = false;
 
-function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.ENDED) {
+document.addEventListener('DOMContentLoaded', function() {
+    player = videojs('sentiment-analysis');
+
+    player.on('ended', function() {
         if (!userHasIntervened) {
             // User did not press the intervene button, save the default value
             var xhr = new XMLHttpRequest();
@@ -20,39 +22,17 @@ function onPlayerStateChange(event) {
         else {
             window.location.href = "/feedback";
         }
-    }
-}
+    });
 
-function onYouTubeIframeAPIReady() {
-	player = new YT.Player('player', {
-		height: '600',
-		width: '800',
-		videoId: '3-kP8i9Lwbg',
-		playerVars: {
-			'controls': 1,
-			'autoplay': 1,
-			'disablekb': 1,
-			'rel': 0,
-			'showinfo': 0,
-			'modestbranding': 1
-		},
-		events: {
-			'onReady': onPlayerReady,
-			'onStateChange': onPlayerStateChange
-		}
-	});
-}
-
-function onPlayerReady(event) {
-	// Player is ready, enable the button
-	var interveneButton = document.querySelector('button');
-	interveneButton.disabled = false;
-}
+    var interveneButton = document.querySelector('#intervene-button');
+    interveneButton.disabled = false;
+});
 
 function saveResponsetime(session_id) {
     // Get the current timestamp of the video
-    var currentTime = player.getCurrentTime();
+    var currentTime = player.currentTime();
     userHasIntervened = true;
+
     // Send an AJAX request to the server to save the timestamp
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/save_responsetime', true);
@@ -65,5 +45,3 @@ function saveResponsetime(session_id) {
     xhr.send(JSON.stringify({ timestamp: currentTime, session_id: session_id }));
     document.getElementById('intervene-button').disabled = true;
 }
-
-
