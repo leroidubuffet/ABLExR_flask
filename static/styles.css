@@ -48,13 +48,16 @@ select {
 }
 
 .dropdown-container {
-	position: fixed;
-	top: 0;
-	left: 10%;
-	width: 100%;
-	background-color: #f8f9fa;
-	padding: 10px;
-	z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 10%;
+	right: 10%;
+    background-color: #f8f9fa;
+    padding: 10px;
+    z-index: 1;
 }
 
 .dropdown-and-session-info {
@@ -63,5 +66,6 @@ select {
 }
 
 .session-info {
+	top: 0;
     margin-left: 20px;
 }
