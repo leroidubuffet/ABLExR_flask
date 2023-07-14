@@ -8,9 +8,9 @@
     <div class="container">
         <h1>New Session</h1>
         <form method="post">
-            <p>Choose a session ID and the ethnicity of the Person Of Interest</p>
+            <p>Choose a session number and the ethnicity of the Person Of Interest</p>
 			<p><a href="https://docs.google.com/spreadsheets/d/12kdXMixqPOi5dwPBsxawfAe2asPIWhMyfl51is0jZyc/edit?usp=sharing" target="_blank">Training data</a></p>
-            <input type="text" autocomplete="off" name="session_id" maxlength="3" placeholder="Session ID (max 3 digits)" required>
+            <input type="text" autocomplete="off" name="session_id" maxlength="3" placeholder="S. number (max 3 digits)" required>
             <select name="ethnicity">
                 {% for ethnicity in ethnicities %}
                 <option value="{{ ethnicity }}">{{ ethnicity.capitalize() }}</option>
@@ -20,10 +20,12 @@
 			<button id="submitBtn" type="submit">Start Session</button>
 	        </form>
 		{% if error %}
-		<h2>{{ error }}</h2>
+		<p style="color: red">{{ error }}</p>
+		<br>The session ID is a combination of the ethnicity (1: black, 2: latino, 3: white) and the session number.
+		</p>
         {% endif %}
         {% if session_id %}
-        <p>Session ID is:</p>
+        <p>Session ID:</p>
         <h1>{{ session_id }}</h1>
         {% endif %}
         {% if form_submitted %}
