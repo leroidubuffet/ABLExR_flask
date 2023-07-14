@@ -12,7 +12,7 @@ def load_data(session_id):
 	# Load hume data from csv
 	df_officer = pd.read_csv('datasets/OF_language.csv')
 	df_driver = pd.read_csv('datasets/DF_language.csv')
-	df_scene = pd.read_csv('datasets/O+D_F_language.csv')
+	df_scene = pd.read_csv('datasets/mean_dimensions.csv')
 
 	# Load reaction times data from the Google Spreadsheet
 	df_rt = get_rt_data_for_session(session_id)
@@ -30,7 +30,7 @@ def chart_render_seaborn_chart(session_id, dimension):
 	plt.xlim(0, 180)  # Set x-axis limits to 0 and 180
 
 	# Plot the Scene data
-	scene_line = sns.lineplot(data=df_scene, x='BeginTime', y=dimension, color='green')
+	scene_line = sns.lineplot(data=df_scene, x='BeginTime', y=dimension, color='none')
 
 	# Plot the Officer data
 	officer_line = sns.lineplot(data=df_officer, x='BeginTime', y=dimension, color=COLOR_PALETTE[0])
@@ -44,13 +44,13 @@ def chart_render_seaborn_chart(session_id, dimension):
 	response_dimension = np.interp(df_rt['reaction_t'], df_scene['BeginTime'], df_scene[dimension])
 
 	# Add the scatter plot on top of the line plot
-	scatter = plt.scatter(df_rt['reaction_t'], response_dimension, c='black', s=10, zorder=10)
+	scatter = plt.scatter(df_rt['reaction_t'], response_dimension, c=COLOR_PALETTE[2], s=10, zorder=10)
 
 	# Create legend for the lines
 	line_legend = [officer_line.lines[1], driver_line.lines[2]]
 
 	# Create legend for the scatter plot
-	scatter_legend = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor='black', markersize=8)]
+	scatter_legend = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=COLOR_PALETTE[2], markersize=6)]
 
 	# Combine the legends
 	legend_handles = line_legend + scatter_legend

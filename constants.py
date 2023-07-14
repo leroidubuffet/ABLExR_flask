@@ -4,4 +4,5 @@ ETHNICITY_MAPPING = {
     3: 'White'
 }
 
-COLOR_PALETTE = ["#6699CC", "#CC6666"]
+# Officer, Driver, Scene dots
+COLOR_PALETTE = ["#6497b1", "#ff6f69", "#011f4b"]
