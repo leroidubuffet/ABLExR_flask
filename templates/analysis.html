@@ -16,26 +16,23 @@
 <body>
     <div class="dropdown-and-session-info">
         <div class="dropdown-container">
-            <form id="dimensionForm" action="/analysis/{{ session_id }}" method="post">
-                <select id="dimension" name="dimension" onchange="submitForm()">
-                    <option selected disabled>Select a dimension</option>
-                    <option value="Anger">Anger</option>
-                    <option value="Distress">Distress</option>
-                    <option value="Anxiety">Anxiety</option>
-                </select>            
-            </form>
-            <br>
-            <a href="/">Home</a>
-            <a href="https://docs.google.com/spreadsheets/d/12kdXMixqPOi5dwPBsxawfAe2asPIWhMyfl51is0jZyc/edit?usp=sharing"target="_blank">Training data</a>
-        </div>
-        <div class="session-info">
-            <p>Session ID: {{ session_id }}</p>
-            <p>Ethnicity: {{ ethnicity }}</p>
-        </div>
+			<form id="dimensionForm" action="/analysis/{{ session_id }}" method="post">
+				<select id="dimension" name="dimension" onchange="submitForm()">
+					<option selected disabled>Select a dimension</option>
+					<option value="Anger">Anger</option>
+					<option value="Distress">Distress</option>
+					<option value="Anxiety">Anxiety</option>
+				</select>            
+			</form>
+			<a href="/">Home</a>
+			<a href="https://docs.google.com/spreadsheets/d/12kdXMixqPOi5dwPBsxawfAe2asPIWhMyfl51is0jZyc/edit?usp=sharing"target="_blank">Training data</a>
+			<p>Session ID: {{ session_id }}</p>
+			<p>Ethnicity: {{ ethnicity }}</p>
+		</div>
     </div>
-    <br>
-    <br>
-    <img src="data:image/png;base64,{{ chart_image }}">
+	<div class="chart-container">
+		<img src="data:image/png;base64,{{ chart_image }}">
+	</div>
     <br>
     <video id="sentiment-analysis" class="video-js vjs-big-play-centered vjs-theme-city" controls preload="auto" width="800" height="600"
     data-setup="{}">
