@@ -48,7 +48,6 @@ def get_ethnicity_by_session_id(session_id):
 
 def get_wk_by_name(session_id):
 	try:
-		worksheet = gs.worksheet(session_id)
 		return gs.worksheet(session_id)
 	except gspread.exceptions.WorksheetNotFound:
 		return None
