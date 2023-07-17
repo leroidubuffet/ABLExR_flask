@@ -7,7 +7,7 @@ import base64
 
 # Third-party libraries
 from flask import Flask, render_template, request, redirect, url_for, g, session
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -17,8 +17,8 @@ import numpy as np
 
 # App libraries
 from chart import chart_render_seaborn_chart
-from google_sheets import get_s_data, add_record, add_session, add_feedback, get_last_added_wk, get_wk_by_name, create_session_wk, get_rt_data, get_s_data, get_f_data
-from utils import map_ethnicity, inverse_ethnicity_mapping, validate_session_id
+from google_sheets import get_s_data, add_record, add_session, add_feedback, get_wk_by_name, create_session_wk, get_s_data
+from utils import inverse_ethnicity_mapping
 
 app = Flask(__name__)
 socketio = SocketIO(app)
