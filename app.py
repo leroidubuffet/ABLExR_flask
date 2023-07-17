@@ -172,10 +172,9 @@ def video():
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
 	data = request.get_json()
-	print('data: ', data)
 	session_id = session.get('session_id')  # Get the session_id from the session object
 	response_time = round(float(data['timestamp']), 2)
-	print("session_id: ", session_id)
+	response_time = str(response_time).replace(',', '.')
 
 	try:
 		# Add the record to the DataFrame and Google Spreadsheet
@@ -203,7 +202,6 @@ def feedback():
 	else:
 		# Render the feedback form
 		return render_template('feedback.html')
-
 
 if __name__ == '__main__':
 	socketio.run(app)
