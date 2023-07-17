@@ -1,5 +1,5 @@
 :root {
-	--top-margin: 30vh; /* Adjust the value to set the desired relative margin */
+	--top-margin: 30vh;
 }
 
 body {
@@ -7,7 +7,6 @@ body {
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-	/* height: 100vh; */
 	font-family: Arial, sans-serif;
 	min-width: 1000px;
 	margin-top: var(--top-margin);
