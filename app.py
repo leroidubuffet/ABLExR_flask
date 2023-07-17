@@ -22,8 +22,8 @@ from utils import map_ethnicity, inverse_ethnicity_mapping, validate_session_id
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-app.secret_key = '0987654321' # DEBUG
-app.logger.setLevel(logging.DEBUG) # DEBUG
+app.secret_key = '0987654321' # DELETE
+app.logger.setLevel(logging.DEBUG) # DELETE
 
 @app.route('/')
 def index():
@@ -33,7 +33,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
-	if request.method == 'POST':
+	if request.method == 'POST': # DELETE
 		if request.form['password'] != '1234':
 			error = 'Invalid password. Please try again.'
 		else:
@@ -71,9 +71,8 @@ def new_session():
 
 		user_session_id = request.form['session_id']
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
-			session_id = race_digit + user_session_id.zfill(3)  # Combine race digit and user session ID
+			session_id = race_digit + user_session_id.zfill(3)
 
-			# Check if the session already exists
 			if get_wk_by_name(session_id) is not None:
 				error = 'Session ID already exists. Please try a different ID.'
 				return render_template('new_session.html', session_id=session_id, ethnicities=ethnicities, error=error)
@@ -87,8 +86,6 @@ def new_session():
 
 	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted, error=error)
 
-
-# Convert the 'session_id' and 'ethnicity' columns to integer
 df_s = get_s_data()
 df_s['session_id'] = df_s['session_id'].astype(int)
 
@@ -103,13 +100,11 @@ def analyze_session():
 		if not session_id.isdigit() or len(session_id) != 4:
 			error = 'Insert a four digit number please.'
 		else:
-			# Query the table to check if the session ID exists
 			session_exists = get_wk_by_name(session_id)
 
 			if not session_exists:
 				error = 'That session ID does not exist.'
 			else:
-				print("Analyze session.Session ID:", session_id)  #  DEBUG
 				return redirect(url_for('render_seaborn_chart', session_id=session_id))        
 
 	return render_template('analyze_session.html', error=error)
@@ -136,14 +131,13 @@ def video_login():
 
 		if not session_id.isdigit() or len(session_id) !=4:
 			error = 'Insert a four digit number please.'
-			# Query the table to check if the session ID exists
 		else:
 			session_exists = get_wk_by_name(session_id)
 
 			if not session_exists:
 				error = 'That session ID does not exist.'
 			else:
-				session['session_id'] = session_id  # Set the session_id in the session object
+				session['session_id'] = session_id
 				return redirect(url_for('waiting_room', session_id=session_id))
 
 	return render_template('video_login.html', error=error)
@@ -155,11 +149,9 @@ def waiting_room(session_id):
 @app.route('/ar_vr')
 def ar_vr():
 
-	# Retrieve the last saved session_id from the Google Spreadsheet
 	df_s = get_s_data()
 	session_id = str(df_s['session_id'].iloc[-1])
 
-	# Convert the int64 to a regular int before storing it in the session
 	session['session_id'] = int(session_id)
 	
 	return render_template('ar_vr.html', pairing_id=session_id)
@@ -177,11 +169,9 @@ def save_responsetime():
 	response_time = str(response_time).replace(',', '.')
 
 	try:
-		# Add the record to the DataFrame and Google Spreadsheet
 		add_record(session_id, response_time)
 		return 'Time saved'
 	except Exception as e:
-		# Handle the exception, you can log the error or return an error message
 		app.logger.error('Error when saving response time: %s', e)
 		return 'Unable to save your time.'
 	
@@ -189,18 +179,15 @@ def save_responsetime():
 def feedback():
 	if request.method == 'POST':
 		feedback = request.form['feedback']
-		session_id = session.get('session_id')  # Get the session_id from the session object
+		session_id = session.get('session_id')
 
 		try:
-			# Add the feedback to the Google Sheet
 			add_feedback(session_id, feedback)
 
 			return render_template('feedback.html', message='Thank you for your feedback.', form_submitted=True)
 		except Exception as e:
-			# Handle the exception, you can log the error or return an error message
 			return render_template('feedback.html', message='Unable to save your feedback.')
 	else:
-		# Render the feedback form
 		return render_template('feedback.html')
 
 if __name__ == '__main__':
