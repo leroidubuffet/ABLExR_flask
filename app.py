@@ -81,7 +81,6 @@ def new_session():
 				error = SESSION_ID_EXISTS
 				return render_template('new_session.html', session_id=session_id, ethnicities=ethnicities, error=error)
 			else:
-				# Save the record to Google Spreadsheet
 				add_session(session_id, session_description)
 				create_session_wk(session_id)
 		else:
@@ -161,16 +160,19 @@ def video():
 @app.route('/save_responsetime', methods=['POST'])
 def save_responsetime():
 	data = request.get_json()
-	session_id = session.get('session_id')  # Get the session_id from the session object
+	session_id = session.get('session_id')
 	response_time = round(float(data['timestamp']), 2)
 	response_time = str(response_time).replace(',', '.')
 
 	try:
 		add_record(session_id, response_time)
-		return 'Time saved'
+		return 'Time saved', 200
+	except ValueError as ve:
+		app.logger.error('Error when saving response time: %s', ve)
+		return str(ve), 400
 	except Exception as e:
 		app.logger.error('Error when saving response time: %s', e)
-		return 'Unable to save your time.'
+		return 'Internal server error', 500
 	
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
@@ -181,9 +183,12 @@ def feedback():
 		try:
 			add_feedback(session_id, feedback)
 
-			return render_template('feedback.html', message='Thank you for your feedback.', form_submitted=True)
+			return render_template('feedback.html', message='Thank you for your feedback.', form_submitted=True), 200
+		except ValueError as ve:
+			app.logger.error('Error when saving feedback: %s', ve)
+			return str(ve), 400
 		except Exception as e:
-			return render_template('feedback.html', message='Unable to save your feedback.')
+			return render_template('feedback.html', message='Unable to save your feedback.'), 500
 	else:
 		return render_template('feedback.html')
 
