@@ -35,7 +35,6 @@ df = df.drop(columns=[column for column in df.columns if column.endswith('_1') o
 # Now df contains the mean of the values from the two individuals for each second
 df.to_csv('../datasets/mean_dimensions.csv', index=False)
 
-
 ####	Activate if you want to see the representation of the 3 datasets	####
 # plt.figure(figsize=(15, 6))
 

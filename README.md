@@ -50,7 +50,13 @@ This file is a video rendering of the AV/AR scene 3 experience.
 
 This file is a screencast of hume.ai showing the evolution of the language dimensions when playing the uploaded file.
 
-## Prerequisites
+## Instalation
+
+- Clone the repo: `git clone https://github.com/miguelespada/ABLExR-microserver`
+- Change into the directory: `cd ABLExR-Trainer`
+- Run the Flask app: `python app.py` or `flask --app app.py --debug run`
+
+### Prerequisites
 
 You will need to have the following tools installed on your machine:
 
@@ -67,13 +73,7 @@ You can install the necessary python packages with pip:
 
 `pip install flask flask-socketio gspread pandas numpy seaborn matplotlib`
 
-## Installing
-
-- Clone the repo: `git clone https://github.com/miguelespada/ABLExR-microserver`
-- Change into the directory: `cd ABLExR-Trainer`
-- Run the Flask app: `python app.py` or `flask --app app.py --debug run`
-
-## Usage
+### Usage
 
 - Visit http://localhost:5000 in your web browser to view the app.
 - Use the trainer dashboard to create new sessions and view session data.
