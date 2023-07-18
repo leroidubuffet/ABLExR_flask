@@ -87,5 +87,6 @@ You can install the necessary python packages with pip:
 - Remove video controls in scene 3
 - Add autoplay in scene 3 video
 - Implement credentials and secrets
+- Create routes.py file
 - Generate and implement function classes
 - Add a visual layer to the application
