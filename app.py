@@ -17,8 +17,8 @@ import numpy as np
 
 # App libraries
 from chart import chart_render_seaborn_chart
-from google_sheets import get_s_data, add_record, add_session, add_feedback, get_wk_by_name, create_session_wk
-from utils import inverse_ethnicity_mapping, validate_session_id
+from google_sheets import add_record, add_session, add_feedback, get_wk_by_name, create_session_wk
+from utils import validate_session_id
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -89,11 +89,6 @@ def new_session():
 
 	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted, error=error)
 
-df_s = get_s_data()
-df_s['session_id'] = df_s['session_id'].astype(int)
-
-df_s['ethnicity'] = df_s['ethnicity'].map(inverse_ethnicity_mapping).astype(int)
-
 @app.route('/analyze_session', methods=['GET', 'POST'])
 def analyze_session():
 	error = None
@@ -154,13 +149,8 @@ def waiting_room(session_id):
 
 @app.route('/ar_vr')
 def ar_vr():
-
-	df_s = get_s_data()
-	session_id = str(df_s['session_id'].iloc[-1])
-
-	session['session_id'] = int(session_id)
 	
-	return render_template('ar_vr.html', pairing_id=session_id)
+	return render_template('ar_vr.html')
 
 @app.route('/video')
 def video():
