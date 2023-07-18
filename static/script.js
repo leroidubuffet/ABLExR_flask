@@ -2,7 +2,7 @@ var player;
 var userHasIntervened = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-    player = videojs('sentiment-analysis');
+    player = videojs('scene-3');
 
     player.on('ended', function() {
         if (!userHasIntervened) {
