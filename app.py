@@ -19,6 +19,7 @@ import numpy as np
 from chart import chart_render_seaborn_chart
 from google_sheets import add_record, add_session, add_feedback, get_wk_by_name, create_session_wk
 from utils import validate_session_id
+from constants import INVALID_PASSWORD, SESSION_ID_EXISTS, SESSION_ID_MUST_BE_DIGIT, INSERT_FOUR_DIGIT_NUMBER, SESSION_ID_NOT_EXIST
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -38,7 +39,7 @@ def login():
 	error = None
 	if request.method == 'POST': # DELETE
 		if request.form['password'] != '1234':
-			error = 'Invalid password. Please try again.'
+			error = INVALID_PASSWORD
 		else:
 			return redirect(url_for('trainer_dashboard'))
 	return render_template('login.html', error=error)
@@ -77,14 +78,14 @@ def new_session():
 			session_id = race_digit + user_session_id.zfill(3)
 
 			if get_wk_by_name(session_id) is not None:
-				error = 'Session ID already exists. Please try a different ID.'
+				error = SESSION_ID_EXISTS
 				return render_template('new_session.html', session_id=session_id, ethnicities=ethnicities, error=error)
 			else:
 				# Save the record to Google Spreadsheet
 				add_session(session_id, session_description)
 				create_session_wk(session_id)
 		else:
-			error = 'Session ID must be a 3 digit number.'
+			error = SESSION_ID_MUST_BE_DIGIT
 			return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=False, error=error)
 
 	return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=form_submitted, error=error)
@@ -96,12 +97,12 @@ def analyze_session():
 		session_id = request.form['session_id']
 
 		if not validate_session_id(session_id):
-			error = 'Insert a four digit number please.'
+			error = INSERT_FOUR_DIGIT_NUMBER
 		else:
 			session_exists = get_wk_by_name(session_id)
 
 			if not session_exists:
-				error = 'That session ID does not exist.'
+				error = SESSION_ID_NOT_EXIST
 			else:
 				return redirect(url_for('render_seaborn_chart', session_id=session_id))        
 
@@ -131,12 +132,12 @@ def video_login():
 		session_id = request.form['session_id']
 
 		if not validate_session_id(session_id):
-			error = 'Insert a four digit number please.'
+			error = INSERT_FOUR_DIGIT_NUMBER
 		else:
 			session_exists = get_wk_by_name(session_id)
 
 			if not session_exists:
-				error = 'That session ID does not exist.'
+				error = SESSION_ID_NOT_EXIST
 			else:
 				session['session_id'] = session_id
 				return redirect(url_for('waiting_room', session_id=session_id))
