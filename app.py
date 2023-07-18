@@ -18,7 +18,7 @@ import numpy as np
 # App libraries
 from chart import chart_render_seaborn_chart
 from google_sheets import get_s_data, add_record, add_session, add_feedback, get_wk_by_name, create_session_wk, get_s_data
-from utils import inverse_ethnicity_mapping
+from utils import inverse_ethnicity_mapping, validate_session_id
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -29,7 +29,10 @@ app.logger.setLevel(logging.DEBUG) # DELETE
 def index():
 	return render_template('index.html')
 
+###############################
 ###		Trainer routes		###
+###############################
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
@@ -97,7 +100,7 @@ def analyze_session():
 	if request.method == 'POST':
 		session_id = request.form['session_id']
 
-		if not session_id.isdigit() or len(session_id) != 4:
+		if not validate_session_id(session_id):
 			error = 'Insert a four digit number please.'
 		else:
 			session_exists = get_wk_by_name(session_id)
@@ -118,7 +121,10 @@ def render_seaborn_chart(session_id):
 		dimension = 'Anger'
 	return chart_render_seaborn_chart(session_id, dimension=dimension)
 
+###############################
 ###		Trainee routes		### 
+###############################
+
 @app.route('/experience_menu')
 def experience_menu():
 	return render_template('experience_menu.html')
@@ -129,7 +135,7 @@ def video_login():
 	if request.method == 'POST':
 		session_id = request.form['session_id']
 
-		if not session_id.isdigit() or len(session_id) !=4:
+		if not validate_session_id(session_id):
 			error = 'Insert a four digit number please.'
 		else:
 			session_exists = get_wk_by_name(session_id)
