@@ -12,15 +12,17 @@ The ABLExR Trainer Application is fully functional prototype of a web-based trai
 
 ## Developer notes
 
-The chart that is shown on /analysis depends on the data generated at [Hume](https://www.hume.ai). To get that data you need to provide hume with three separate tracks:
+### Data visualization
 
-- Officer: track containing only the officer's speech
-- Driver: track containing only the driver's speech
-- Scene: track containing both the officer and the drivers scene
+The chart that is shown on /analysis depends on the data generated at [Hume](https://www.hume.ai). To get that data you need to provide hume with three separate audio files:
 
-None of the tracks should include the intro and outro voiceover, but it is probably best to add a silence of the same lenght at the beginning and the end of each file for accuracy in the data visualization.
+- Officer: file containing only the officer's speech
+- Driver: file containing only the driver's speech
+- Scene: file containing both the officer and the drivers scene
 
-At the present time hume outputs three different files: burst, laguage and prosody. This application uses language.
+None of the files should include the *intro* and *outro* voiceover, but it is probably best to add a silence of the same lenght at the beginning and the end of each file for accuracy in the data visualization.
+
+At the present time hume outputs three different files: burst, laguage and prosody. This application uses the language output.
 
 Those datasets are stored in /datasets:
 
@@ -37,6 +39,16 @@ This data is used to plot the red line.
 This data is used to generate `mean_dimensions.csv`, a set of values that represent the means of the values of the driver and the officer for every dimension. To calculate the means use `means_calculator.py`.
 
 The resulting file must be named `mean_dimensions.csv` and placed into /datasets. It will be used to plot an invisible line where the trainees responses (the black dots) are set.
+
+### Videos
+
+- Scene 3: linked at templates/video.html
+
+This file is a video rendering of the AV/AR scene 3 experience. 
+
+- Hume: linked at templates/analysis.html
+
+This file is a screencast of hume.ai showing the evolution of the language dimensions when playing the uploaded file.
 
 ## Prerequisites
 
@@ -57,23 +69,15 @@ You can install the necessary python packages with pip:
 
 ## Installing
 
-- Clone the repo: 'git clone https://github.com/miguelespada/ABLExR-microserver'
-- Change into the directory: 'cd ABLExR-Trainer'
-- Run the Flask app: 'python app.py' or 'flask --app app.py --debug run'
+- Clone the repo: `git clone https://github.com/miguelespada/ABLExR-microserver`
+- Change into the directory: `cd ABLExR-Trainer`
+- Run the Flask app: `python app.py` or `flask --app app.py --debug run`
 
 ## Usage
 
 - Visit http://localhost:5000 in your web browser to view the app.
 - Use the trainer dashboard to create new sessions and view session data.
 - As a trainee, you can join a session, watch the training video, and submit feedback.
-
-## Videos
-
-- Scene 3: linked at templates/video.html
-
-This file is a video rendering of the AV/AR scene 3 experience. 
-
-- Hume: linked at templates/analysis.html
 
 ## TODOs
 
