@@ -17,7 +17,7 @@ import numpy as np
 
 # App libraries
 from chart import chart_render_seaborn_chart
-from google_sheets import get_s_data, add_record, add_session, add_feedback, get_wk_by_name, create_session_wk, get_s_data
+from google_sheets import get_s_data, add_record, add_session, add_feedback, get_wk_by_name, create_session_wk
 from utils import inverse_ethnicity_mapping, validate_session_id
 
 app = Flask(__name__)
