@@ -3,6 +3,10 @@ from utils import map_ethnicity
 import pandas as pd
 from datetime import datetime
 from oauth2client.service_account import ServiceAccountCredentials
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 def authenticate(credentials_file):
     """Authenticate using the provided credentials file"""
@@ -18,7 +22,7 @@ def authenticate(credentials_file):
 credentials_file = 'credentials.json'
 document_name = 'ABLExR-DATA'
 gc = authenticate(credentials_file)
-gs = gc.open(document_name)			# open document
+gs = gc.open(document_name)		# open document
 wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
 wk_s = gs.worksheet('sessions')	# session spreadsheet
 wk_f = gs.worksheet('feedback') # feedback spreadsheet
@@ -75,15 +79,6 @@ def get_rt_data_for_session(session_id):
 	if wk is None:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
 	
-	records = wk.get_all_records()
-	if records:
-		return pd.DataFrame(records)
-	else:
-		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
-
-def get_rt_data(session_id):
-	print(f"Getting data for session_id: {session_id}")
-	wk = gs.worksheet(session_id)
 	records = wk.get_all_records()
 	if records:
 		return pd.DataFrame(records)
