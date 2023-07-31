@@ -92,15 +92,7 @@ def get_s_data():
 	else:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'description'])
 
-def get_f_data():
-	records = wk_f.get_all_records()
-	if records:
-		return pd.DataFrame(records)
-	else:
-		return pd.DataFrame(columns=['session_id', 'ethnicity', 'feedback'])
-
 df_s = get_s_data()
-df_f = get_f_data()
 
 def add_record(session_id, reaction_t):
 	try:
