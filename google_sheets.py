@@ -68,11 +68,6 @@ def create_session_wk(id):
 	wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
 	return wk
 
-def delete_wk(name):
-	wk = get_wk_by_name(name)
-	if wk is not None:
-		gs.del_worksheet(wk)
-
 def get_rt_data_for_session(session_id):
 	wk = get_wk_by_name(session_id)
 	
