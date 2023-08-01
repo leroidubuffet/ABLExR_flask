@@ -65,12 +65,16 @@ def get_wk_by_name(session_id):
 	except gspread.exceptions.WorksheetNotFound:
 		return None
 
-
 def create_session_wk(id):
 	wk = gs.add_worksheet(str(id), 0, 3)
 	wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
 	return wk
 
+def add_session(session_id, session_description):
+	ethnicity_code = int(session_id[0])
+	ethnicity = map_ethnicity(ethnicity_code)
+	record = [session_id, ethnicity, session_description]
+	wk_s.append_row(record, value_input_option='USER_ENTERED')
 
 def get_rt_data_for_session(session_id):
 	wk = get_wk_by_name(session_id)
@@ -83,18 +87,6 @@ def get_rt_data_for_session(session_id):
 		return pd.DataFrame(records)
 	else:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
-
-
-def get_s_data():
-	records = wk_s.get_all_records()
-	if records:
-		return pd.DataFrame(records)
-	else:
-		return pd.DataFrame(columns=['session_id', 'ethnicity', 'description'])
-
-
-df_s = get_s_data()
-
 
 def add_record(session_id, reaction_t):
 	try:
@@ -116,11 +108,6 @@ def add_record(session_id, reaction_t):
 	wk.append_row(record)
 
 
-def add_session(session_id, session_description):
-	ethnicity_code = int(session_id[0])
-	ethnicity = map_ethnicity(ethnicity_code)
-	record = [session_id, ethnicity, session_description]
-	wk_s.append_row(record, value_input_option='USER_ENTERED')
 
 
 def add_feedback(session_id, feedback):
