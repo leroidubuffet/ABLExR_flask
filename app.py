@@ -4,6 +4,7 @@ import logging
 from chart import chart_render_seaborn_chart
 from google_sheets import add_record, get_wk_by_name, manager
 from utils import validate_session_id
+from config import SECRET_KEY
 from constants import INVALID_PASSWORD, SESSION_ID_EXISTS, \
 	SESSION_ID_MUST_BE_DIGIT, INSERT_FOUR_DIGIT_NUMBER, SESSION_ID_NOT_EXIST
 
@@ -15,8 +16,8 @@ matplotlib.use('Agg')
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-app.secret_key = '0987654321' # DELETE
-app.logger.setLevel(logging.DEBUG) # DELETE
+app.secret_key = SECRET_KEY
+app.logger.setLevel(logging.DEBUG)  # DELETE
 
 
 @app.route('/')
@@ -31,7 +32,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
-	if request.method == 'POST': # DELETE
+	if request.method == 'POST':  # DELETE
 		if request.form['password'] != '1234':
 			error = INVALID_PASSWORD
 		else:
