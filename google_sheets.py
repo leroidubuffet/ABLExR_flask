@@ -71,102 +71,83 @@ class GoogleSheetManager:
 			logging.error(f"The specified worksheet for session '{session_id}' was not found.")
 		except Exception as e:
 			logging.error('Error when adding feedback: %s', e)
+	
+	def add_record(self, session_id, reaction_t):
+		try:
+			session_id = str(session_id)
+			ethnicity_code = int(session_id[0])
+		except ValueError:
+			logging.error("Error converting session ID")
+			return
+		ethnicity_code = int(session_id[0])
+		ethnicity = map_ethnicity(ethnicity_code)
+		now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+		record = [ethnicity, reaction_t, now]
+	
+		wk = data_manager.get_wk_by_name(session_id)
+	
+		if wk is None:
+			wk = self.create_session_wk(session_id)
+	
+		wk.append_row(record)
 
 
 manager = GoogleSheetManager(gs, wk_s, wk_f)
 
 
-def get_ethnicity_by_session_id(session_id):
-	worksheet = get_wk_by_name('sessions')
+class GoogleDataRetrieval:
+	def __init__(self, manager):
+		self.manager = manager
 
-	if worksheet is None:
-		return 'Sheet not found'
+	def get_wk_by_name(self, session_id):
+		try:
+			return self.manager.gs.worksheet(session_id)
+		except WorksheetNotFound:
+			logging.error(f"The specified worksheet for session '{session_id}' was not \
+				found.")
+		except Exception as e:
+			logging.error('Error when getting worksheet: %s', e)
 
-	# Convert session_id to string
-	session_id = str(session_id)
+	def get_ethnicity_by_session_id(self, session_id):
+		try:
+			worksheet = self.get_wk_by_name('sessions')
+		except WorksheetNotFound:
+			logging.error(f"The specified worksheet for session '{session_id}' was not \
+				found.")
+		except Exception as e:
+			logging.error('Error when getting worksheet: %s', e)
 
-	# Find all cells matching session_id
-	matching_cells = worksheet.findall(session_id)
-
-	if not matching_cells:
-		return 'Session not found'
-
-	# Get the first matching cell (assuming session_id is unique)
-	cell = matching_cells[0]
-
-	# Fetch the entire row of data
-	row = worksheet.row_values(cell.row)
-
-	# Fetch ethnicity    
-	ethnicity = row[1]
-
-	if not ethnicity:
-		return 'Ethnicity not found'
-
-	return ethnicity
-
-
-def get_wk_by_name(session_id):
-	try:
-		return gs.worksheet(session_id)
-	except gspread.exceptions.WorksheetNotFound:
-		return None
-
-
-# def add_session(session_id, session_description):
-# 	ethnicity_code = int(session_id[0])
-# 	ethnicity = map_ethnicity(ethnicity_code)
-# 	record = [session_id, ethnicity, session_description]
-# 	wk_s.append_row(record, value_input_option='USER_ENTERED')
-
-
-def add_feedback(session_id, feedback):
-	try:
 		session_id = str(session_id)
-		ethnicity_code = int(session_id[0])
-		ethnicity = map_ethnicity(ethnicity_code)
-		record = [session_id, ethnicity, feedback]
-		wk_f.append_row(record, value_input_option='USER_ENTERED')
-	except Exception as e:
-		app.logger.error('Error when adding feedback: %s', e)
 
+		matching_cells = worksheet.findall(session_id)
 
-def create_session_wk(session_id):
-	wk = gs.add_worksheet(str(session_id), 0, 3)
-	wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
-	return wk
+		if not matching_cells:
+			return 'Session not found'
 
+		cell = matching_cells[0]
 
-def get_rt_data_for_session(session_id):
-	wk = get_wk_by_name(session_id)
-	
-	if wk is None:
-		return pd.DataFrame(columns=['session_id', 'ethnicity',
-			'reaction_t', 'timeStamp'])
-	
-	records = wk.get_all_records()
-	if records:
-		return pd.DataFrame(records)
-	else:
-		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 
-			'timeStamp'])
+		row = worksheet.row_values(cell.row)
 
+		ethnicity = row[1]
 
-def add_record(session_id, reaction_t):
-	try:
-		session_id = str(session_id)
-		ethnicity_code = int(session_id[0])
-	except ValueError:
-		app.logger.error("Error converting session ID")
-		return
-	ethnicity_code = int(session_id[0])
-	ethnicity = map_ethnicity(ethnicity_code)
-	now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
-	record = [ethnicity, reaction_t, now]
-	
-	wk = get_wk_by_name(session_id)
-	
-	if wk is None:
-		wk = manager.create_session_wk(session_id)
-	
-	wk.append_row(record)
+		if not ethnicity:
+			return 'Ethnicity not found'
+
+		return ethnicity
+
+	def get_rt_data_for_session(self, session_id):
+		wk = self.get_wk_by_name(session_id)
+
+		if wk is None:
+			return pd.DataFrame(columns=['session_id', 'ethnicity',
+				'reaction_t', 'timeStamp'])
+
+		records = wk.get_all_records()
+		if records:
+			return pd.DataFrame(records)
+		else:
+			return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t',
+				'timeStamp'])
+		
+
+data_manager = GoogleDataRetrieval(manager)
