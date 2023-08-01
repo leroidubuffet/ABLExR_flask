@@ -2,11 +2,14 @@ from datetime import datetime
 import logging
 
 import gspread
+from gspread.exceptions import WorksheetNotFound, SpreadsheetNotFound, \
+	CellNotFound, NoValidUrlKeyFound, APIError
 import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
 
 from constants import CREDENTIALS_FILE, DOCUMENT_NAME
 from utils import map_ethnicity
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -22,12 +25,13 @@ def authenticate(CREDENTIALS_FILE):
 	creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
 	return gspread.authorize(creds)
 
+
 # Google Sheets setup
 gc = authenticate(CREDENTIALS_FILE)
-gs = gc.open(DOCUMENT_NAME)		# open document
-wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
-wk_s = gs.worksheet('sessions')	# session spreadsheet
-wk_f = gs.worksheet('feedback') # feedback spreadsheet
+gs = gc.open(DOCUMENT_NAME)		 # open document
+wk_rt = gs.get_worksheet(0) 	 # reaction time worksheet
+wk_s = gs.worksheet('sessions')	 # session worksheet
+wk_f = gs.worksheet('feedback')  # feedback worksheet
 
 
 class GoogleSheetManager:
@@ -37,15 +41,24 @@ class GoogleSheetManager:
 		self.wk_f = wk_f
 
 	def create_session_wk(self, session_id, rows=0, cols=3):
-		wk = self.gs.add_worksheet(str(session_id), rows, cols)
-		wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
-		return wk
+		try:
+			wk = self.gs.add_worksheet(str(session_id), rows, cols)
+			wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
+			return wk
+		except Exception as e:
+			logging.error('Error when creating session worksheet: %s', e)
+			return None
 	
 	def add_session(self, session_id, session_description):
-		ethnicity_code = int(session_id[0])
-		ethnicity = map_ethnicity(ethnicity_code)
-		record = [session_id, ethnicity, session_description]
-		self.wk_s.append_row(record, value_input_option='USER_ENTERED')
+		try:
+			ethnicity_code = int(session_id[0])
+			ethnicity = map_ethnicity(ethnicity_code)
+			record = [session_id, ethnicity, session_description]
+			self.wk_s.append_row(record, value_input_option='USER_ENTERED')
+		except WorksheetNotFound:
+			logging.error(f"The specified worksheet for session '{session_id}' was not found.")
+		except Exception as e:
+			logging.error('Error when adding session: %s', e)
 
 	def add_feedback(self, session_id, feedback):
 		try:
@@ -54,6 +67,8 @@ class GoogleSheetManager:
 			ethnicity = map_ethnicity(ethnicity_code)
 			record = [session_id, ethnicity, feedback]
 			self.wk_f.append_row(record, value_input_option='USER_ENTERED')
+		except WorksheetNotFound:
+			logging.error(f"The specified worksheet for session '{session_id}' was not found.")
 		except Exception as e:
 			logging.error('Error when adding feedback: %s', e)
 
