@@ -1,3 +1,7 @@
+# Google sheets authentication
+CREDENTIALS_FILE = 'credentials.json'
+DOCUMENT_NAME = 'ABLExR-DATA'
+
 ETHNICITY_MAPPING = {
     1: 'Black',
     2: 'Latino',

@@ -1,28 +1,29 @@
-import gspread
-from utils import map_ethnicity
-import pandas as pd
 from datetime import datetime
-from oauth2client.service_account import ServiceAccountCredentials
 import logging
+
+import gspread
+import pandas as pd
+from oauth2client.service_account import ServiceAccountCredentials
+
+from constants import CREDENTIALS_FILE, DOCUMENT_NAME
+from utils import map_ethnicity
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-def authenticate(credentials_file):
+def authenticate(CREDENTIALS_FILE):
     """Authenticate using the provided credentials file"""
     scope = ["https://spreadsheets.google.com/feeds",
              "https://www.googleapis.com/auth/spreadsheets",
              "https://www.googleapis.com/auth/drive.file",
              "https://www.googleapis.com/auth/drive"]
 
-    creds = ServiceAccountCredentials.from_json_keyfile_name(credentials_file, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
     return gspread.authorize(creds)
 
 # Google Sheets setup
-credentials_file = 'credentials.json'
-document_name = 'ABLExR-DATA'
-gc = authenticate(credentials_file)
-gs = gc.open(document_name)		# open document
+gc = authenticate(CREDENTIALS_FILE)
+gs = gc.open(DOCUMENT_NAME)		# open document
 wk_rt = gs.get_worksheet(0) 	# reaction time spreadsheet
 wk_s = gs.worksheet('sessions')	# session spreadsheet
 wk_f = gs.worksheet('feedback') # feedback spreadsheet
@@ -55,7 +56,6 @@ def get_ethnicity_by_session_id(session_id):
 		return 'Ethnicity not found'
 
 	return ethnicity
-
 
 def get_wk_by_name(session_id):
 	try:
