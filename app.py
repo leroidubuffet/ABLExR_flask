@@ -1,38 +1,33 @@
-# Standard libraries
 import random
-from datetime import datetime
 import logging
-import io
-import base64
 
-# Third-party libraries
-from flask import Flask, render_template, request, redirect, url_for, g, session
+from chart import chart_render_seaborn_chart
+from google_sheets import add_record, add_session, add_feedback, \
+	get_wk_by_name, create_session_wk
+from utils import validate_session_id
+from constants import INVALID_PASSWORD, SESSION_ID_EXISTS, \
+	SESSION_ID_MUST_BE_DIGIT, INSERT_FOUR_DIGIT_NUMBER, SESSION_ID_NOT_EXIST
+
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_socketio import SocketIO
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
-import numpy as np
 
-# App libraries
-from chart import chart_render_seaborn_chart
-from google_sheets import add_record, add_session, add_feedback, get_wk_by_name, create_session_wk
-from utils import validate_session_id
-from constants import INVALID_PASSWORD, SESSION_ID_EXISTS, SESSION_ID_MUST_BE_DIGIT, INSERT_FOUR_DIGIT_NUMBER, SESSION_ID_NOT_EXIST
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.secret_key = '0987654321' # DELETE
 app.logger.setLevel(logging.DEBUG) # DELETE
 
+
 @app.route('/')
 def index():
 	return render_template('index.html')
 
-###############################
-###		Trainer routes		###
-###############################
+##################
+# Trainer routes #
+##################
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
