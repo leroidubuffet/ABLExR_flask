@@ -2,7 +2,7 @@ import random
 import logging
 
 from chart import chart_render_seaborn_chart
-from google_sheets import add_record, get_wk_by_name, manager
+from google_sheets import manager, data_manager
 from utils import validate_session_id
 from config import SECRET_KEY
 from constants import INVALID_PASSWORD, SESSION_ID_EXISTS, \
@@ -73,7 +73,7 @@ def new_session():
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
 			session_id = race_digit + user_session_id.zfill(3)
 
-			if get_wk_by_name(session_id) is not None:
+			if data_manager.get_wk_by_name(session_id) is not None:
 				error = SESSION_ID_EXISTS
 				return render_template('new_session.html', session_id=session_id, ethnicities=ethnicities, error=error)
 			else:
@@ -94,7 +94,7 @@ def analyze_session():
 		if not validate_session_id(session_id):
 			error = INSERT_FOUR_DIGIT_NUMBER
 		else:
-			session_exists = get_wk_by_name(session_id)
+			session_exists = data_manager.get_wk_by_name(session_id)
 
 			if not session_exists:
 				error = SESSION_ID_NOT_EXIST
@@ -129,7 +129,7 @@ def video_login():
 		if not validate_session_id(session_id):
 			error = INSERT_FOUR_DIGIT_NUMBER
 		else:
-			session_exists = get_wk_by_name(session_id)
+			session_exists = data_manager.get_wk_by_name(session_id)
 
 			if not session_exists:
 				error = SESSION_ID_NOT_EXIST
@@ -161,7 +161,7 @@ def save_responsetime():
 	response_time = str(response_time).replace(',', '.')
 
 	try:
-		add_record(session_id, response_time)
+		manager.add_record(session_id, response_time)
 		return 'Time saved', 200
 	except ValueError as ve:
 		app.logger.error('Error when saving response time: %s', ve)
@@ -187,6 +187,7 @@ def feedback():
 			return render_template('feedback.html', message='Unable to save your feedback.'), 500
 	else:
 		return render_template('feedback.html')
+
 
 if __name__ == '__main__':
 	socketio.run(app)

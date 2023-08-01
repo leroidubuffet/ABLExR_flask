@@ -5,7 +5,7 @@ import numpy as np
 import io
 import base64
 from flask import render_template
-from google_sheets import get_rt_data_for_session, get_ethnicity_by_session_id
+from google_sheets import manager, data_manager
 from constants import ETHNICITY_MAPPING, COLOR_PALETTE
 
 def load_data(session_id):
@@ -15,10 +15,10 @@ def load_data(session_id):
 	df_scene = pd.read_csv('datasets/mean_dimensions.csv')
 
 	# Load reaction times data from the Google Spreadsheet
-	df_rt = get_rt_data_for_session(session_id)
+	df_rt = data_manager.get_rt_data_for_session(session_id)
 
 	# Get the ethnicity from the 'sessions' worksheet
-	ethnicity = get_ethnicity_by_session_id(session_id)
+	ethnicity = data_manager.get_ethnicity_by_session_id(session_id)
 
 	return df_officer, df_driver, df_scene, df_rt, ethnicity
 
