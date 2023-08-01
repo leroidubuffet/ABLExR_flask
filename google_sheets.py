@@ -11,15 +11,16 @@ from utils import map_ethnicity
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-def authenticate(CREDENTIALS_FILE):
-    """Authenticate using the provided credentials file"""
-    scope = ["https://spreadsheets.google.com/feeds",
-             "https://www.googleapis.com/auth/spreadsheets",
-             "https://www.googleapis.com/auth/drive.file",
-             "https://www.googleapis.com/auth/drive"]
 
-    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
-    return gspread.authorize(creds)
+def authenticate(CREDENTIALS_FILE):
+	"""Authenticate using the provided credentials file"""
+	scope = ["https://spreadsheets.google.com/feeds",
+			"https://www.googleapis.com/auth/spreadsheets",
+			"https://www.googleapis.com/auth/drive.file",
+			"https://www.googleapis.com/auth/drive"]
+
+	creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+	return gspread.authorize(creds)
 
 # Google Sheets setup
 gc = authenticate(CREDENTIALS_FILE)
@@ -64,16 +65,19 @@ def get_ethnicity_by_session_id(session_id):
 
 	return ethnicity
 
+
 def get_wk_by_name(session_id):
 	try:
 		return gs.worksheet(session_id)
 	except gspread.exceptions.WorksheetNotFound:
 		return None
-	
+
+
 def create_session_wk(id):
 	wk = gs.add_worksheet(str(id), 0, 3)
 	wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
 	return wk
+
 
 def get_rt_data_for_session(session_id):
 	wk = get_wk_by_name(session_id)
@@ -87,6 +91,7 @@ def get_rt_data_for_session(session_id):
 	else:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
 
+
 def get_s_data():
 	records = wk_s.get_all_records()
 	if records:
@@ -94,7 +99,9 @@ def get_s_data():
 	else:
 		return pd.DataFrame(columns=['session_id', 'ethnicity', 'description'])
 
+
 df_s = get_s_data()
+
 
 def add_record(session_id, reaction_t):
 	try:
@@ -115,11 +122,13 @@ def add_record(session_id, reaction_t):
 	
 	wk.append_row(record)
 
+
 def add_session(session_id, session_description):
 	ethnicity_code = int(session_id[0])
 	ethnicity = map_ethnicity(ethnicity_code)
 	record = [session_id, ethnicity, session_description]
 	wk_s.append_row(record, value_input_option='USER_ENTERED')
+
 
 def add_feedback(session_id, feedback):
 	try:
