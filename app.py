@@ -111,9 +111,9 @@ def render_seaborn_chart(session_id):
 		dimension = 'Anger'
 	return chart_render_seaborn_chart(session_id, dimension=dimension)
 
-###############################
-###		Trainee routes		### 
-###############################
+##################
+# Trainee routes # 
+##################
 
 @app.route('/experience_menu')
 def experience_menu():
