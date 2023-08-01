@@ -2,8 +2,7 @@ import random
 import logging
 
 from chart import chart_render_seaborn_chart
-from google_sheets import add_record, add_session, add_feedback, \
-	get_wk_by_name, create_session_wk
+from google_sheets import add_record, get_wk_by_name, manager
 from utils import validate_session_id
 from constants import INVALID_PASSWORD, SESSION_ID_EXISTS, \
 	SESSION_ID_MUST_BE_DIGIT, INSERT_FOUR_DIGIT_NUMBER, SESSION_ID_NOT_EXIST
@@ -38,6 +37,7 @@ def login():
 		else:
 			return redirect(url_for('trainer_dashboard'))
 	return render_template('login.html', error=error)
+
 
 @app.route('/trainer_dashboard')
 def trainer_dashboard():
@@ -76,8 +76,8 @@ def new_session():
 				error = SESSION_ID_EXISTS
 				return render_template('new_session.html', session_id=session_id, ethnicities=ethnicities, error=error)
 			else:
-				add_session(session_id, session_description)
-				create_session_wk(session_id)
+				manager.add_session(session_id, session_description)
+				manager.create_session_wk(session_id)
 		else:
 			error = SESSION_ID_MUST_BE_DIGIT
 			return render_template('new_session.html', ethnicities=ethnicities, session_id=session_id, form_submitted=False, error=error)
@@ -176,7 +176,7 @@ def feedback():
 		session_id = session.get('session_id')
 
 		try:
-			add_feedback(session_id, feedback)
+			manager.add_feedback(session_id, feedback)
 
 			return render_template('feedback.html', message='Thank you for your feedback.', form_submitted=True), 200
 		except ValueError as ve:

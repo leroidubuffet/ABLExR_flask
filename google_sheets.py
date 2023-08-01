@@ -31,13 +31,13 @@ wk_f = gs.worksheet('feedback') # feedback spreadsheet
 
 
 class GoogleSheetManager:
-	def __init__(self, session_id, session_description, feedback):
-		self.session_id = session_id
-		self.session_description = session_description
-		self.feedback = feedback
+	def __init__(self, gs, wk_s, wk_f):
+		self.gs = gs
+		self.wk_s = wk_s
+		self.wk_f = wk_f
 
 	def create_session_wk(self, session_id, rows=0, cols=3):
-		wk = gs.add_worksheet(str(session_id), rows, cols)
+		wk = self.gs.add_worksheet(str(session_id), rows, cols)
 		wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
 		return wk
 	
@@ -45,7 +45,7 @@ class GoogleSheetManager:
 		ethnicity_code = int(session_id[0])
 		ethnicity = map_ethnicity(ethnicity_code)
 		record = [session_id, ethnicity, session_description]
-		wk_s.append_row(record, value_input_option='USER_ENTERED')
+		self.wk_s.append_row(record, value_input_option='USER_ENTERED')
 
 	def add_feedback(self, session_id, feedback):
 		try:
@@ -53,9 +53,12 @@ class GoogleSheetManager:
 			ethnicity_code = int(session_id[0])
 			ethnicity = map_ethnicity(ethnicity_code)
 			record = [session_id, ethnicity, feedback]
-			wk_f.append_row(record, value_input_option='USER_ENTERED')
+			self.wk_f.append_row(record, value_input_option='USER_ENTERED')
 		except Exception as e:
-			app.logger.error('Error when adding feedback: %s', e)
+			logging.error('Error when adding feedback: %s', e)
+
+
+manager = GoogleSheetManager(gs, wk_s, wk_f)
 
 
 def get_ethnicity_by_session_id(session_id):
@@ -94,11 +97,12 @@ def get_wk_by_name(session_id):
 	except gspread.exceptions.WorksheetNotFound:
 		return None
 
-def add_session(session_id, session_description):
-	ethnicity_code = int(session_id[0])
-	ethnicity = map_ethnicity(ethnicity_code)
-	record = [session_id, ethnicity, session_description]
-	wk_s.append_row(record, value_input_option='USER_ENTERED')
+
+# def add_session(session_id, session_description):
+# 	ethnicity_code = int(session_id[0])
+# 	ethnicity = map_ethnicity(ethnicity_code)
+# 	record = [session_id, ethnicity, session_description]
+# 	wk_s.append_row(record, value_input_option='USER_ENTERED')
 
 
 def add_feedback(session_id, feedback):
@@ -111,22 +115,27 @@ def add_feedback(session_id, feedback):
 	except Exception as e:
 		app.logger.error('Error when adding feedback: %s', e)
 
+
 def create_session_wk(session_id):
 	wk = gs.add_worksheet(str(session_id), 0, 3)
 	wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
 	return wk
 
+
 def get_rt_data_for_session(session_id):
 	wk = get_wk_by_name(session_id)
 	
 	if wk is None:
-		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
+		return pd.DataFrame(columns=['session_id', 'ethnicity',
+			'reaction_t', 'timeStamp'])
 	
 	records = wk.get_all_records()
 	if records:
 		return pd.DataFrame(records)
 	else:
-		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 'timeStamp'])
+		return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t', 
+			'timeStamp'])
+
 
 def add_record(session_id, reaction_t):
 	try:
@@ -143,6 +152,6 @@ def add_record(session_id, reaction_t):
 	wk = get_wk_by_name(session_id)
 	
 	if wk is None:
-		wk = create_session_wk(session_id)
+		wk = manager.create_session_wk(session_id)
 	
 	wk.append_row(record)
