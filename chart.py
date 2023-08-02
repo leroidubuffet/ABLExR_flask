@@ -123,6 +123,7 @@ def create_plot(df_officer, df_driver, df_scene, df_rt, dimension):
 
     # Convert the BytesIO object to a base64-encoded string
     base64_png = base64.b64encode(bytes_image.getvalue()).decode('ascii')
+    plt.close
 
     return base64_png
 
