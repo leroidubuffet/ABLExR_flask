@@ -35,26 +35,33 @@ wk_s = gs.worksheet('sessions')	 # session worksheet
 wk_f = gs.worksheet('feedback')  # feedback worksheet
 
 
-# Exception handlig decorator
-def handle_exceptions(f):
-	@wraps(f)
-	def wrapper(*args, **kwargs):
-		try:
-			return f(*args, **kwargs)
-		except SpreadsheetNotFound:
-			logging.error(f"Spreadsheet not found for session_id: {args[1]}")
-		except NoValidUrlKeyFound:
-			logging.error(f"No valid URL key found for session_id: {args[1]}")
-		except WorksheetNotFound:
-			logging.error(f"Worksheet not found for session_id: {args[1]}")
-		except CellNotFound:
-			logging.error(f"Cell not found for session_id: {args[1]}")
-		except APIError as e:
-			logging.error(f"API Error when creating worksheet for session_id: {args[1]}. Error: {str(e)}")
-		except Exception as e:
-			logging.error(f"Error when creating session worksheet: {str(e)}")
-		return None
-	return wrapper
+# Exception handling decorator
+def handle_exceptions(context=""):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except SpreadsheetNotFound:
+                logging.error(f"{context} Spreadsheet not found \
+				for session_id: {args[1]}")
+            except NoValidUrlKeyFound:
+                logging.error(f"{context} No valid URL key found \
+				for session_id: {args[1]}")
+            except WorksheetNotFound:
+                logging.error(f"{context} Worksheet not found \
+				for session_id: {args[1]}")
+            except CellNotFound:
+                logging.error(f"{context} Cell not found \
+				for session_id: {args[1]}")
+            except APIError as e:
+                logging.error(f"{context} API Error when working with \
+				session_id: {args[1]}. Error: {str(e)}")
+            except Exception as e:
+                logging.error(f"{context} Error: {str(e)}")
+            return None
+        return wrapper
+    return decorator
 
 
 class GoogleSheetManager:
@@ -63,24 +70,24 @@ class GoogleSheetManager:
 		self.wk_s = wk_s
 		self.wk_f = wk_f
 
-	@handle_exceptions
+	@handle_exceptions(context="Getting worksheet by name")
 	def get_wk_by_name(self, session_id):
 		return self.gs.worksheet(session_id)
 
-	@handle_exceptions
+	@handle_exceptions(context="Creating worksheet")
 	def create_session_wk(self, session_id, rows=0, cols=3):
 		wk = self.gs.add_worksheet(str(session_id), rows, cols)
 		wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
 		return wk
 	
-	@handle_exceptions
+	@handle_exceptions(context="Adding session")
 	def add_session(self, session_id, session_description):
 		ethnicity_code = int(session_id[0])
 		ethnicity = map_ethnicity(ethnicity_code)
 		record = [session_id, ethnicity, session_description]
 		self.wk_s.append_row(record, value_input_option='USER_ENTERED')
 
-	@handle_exceptions
+	@handle_exceptions(context="Adding feedback")
 	def add_feedback(self, session_id, feedback):
 		session_id = str(session_id)
 		ethnicity_code = int(session_id[0])
@@ -88,7 +95,7 @@ class GoogleSheetManager:
 		record = [session_id, ethnicity, feedback]
 		self.wk_f.append_row(record, value_input_option='USER_ENTERED')
 	
-	@handle_exceptions
+	@handle_exceptions(context="Adding record")
 	def add_record(self, session_id, reaction_t):
 		session_id = str(session_id)
 		ethnicity_code = int(session_id[0])
@@ -111,7 +118,7 @@ class GoogleDataRetrieval:
 	def __init__(self, manager):
 		self.manager = manager
 
-	@handle_exceptions
+	@handle_exceptions(context="Getting ethnicity")
 	def get_ethnicity_by_session_id(self, session_id):
 		worksheet = self.manager.get_wk_by_name('sessions')
 		session_id = str(session_id)
@@ -121,19 +128,25 @@ class GoogleDataRetrieval:
 		ethnicity = row[1]
 		return ethnicity
 
-	@handle_exceptions
+	@handle_exceptions(context="Getting response time data")
 	def get_rt_data_for_session(self, session_id):
-		wk = manager.get_wk_by_name(session_id)
+		wk = self.manager.get_wk_by_name(session_id)
 
 		if wk is None:
-			return pd.DataFrame(columns=['session_id', 'ethnicity',
-				'reaction_t', 'timeStamp'])
+			return pd.DataFrame(columns=[
+				'session_id',
+				'ethnicity',
+				'reaction_t',
+				'timeStamp'])
 
 		records = wk.get_all_records()
 		if records:
 			return pd.DataFrame(records)
 		else:
-			return pd.DataFrame(columns=['session_id', 'ethnicity', 'reaction_t',
+			return pd.DataFrame(columns=[
+				'session_id',
+				'ethnicity',
+				'reaction_t',
 				'timeStamp'])
 		
 
