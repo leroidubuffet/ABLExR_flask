@@ -11,6 +11,10 @@ from google_sheets import data_manager
 from constants import COLOR_PALETTE
 
 
+class DataLoadingError(Exception):
+    pass
+
+
 def load_data(session_id):
     try:
         # Load hume data from csv
@@ -25,7 +29,7 @@ def load_data(session_id):
         ethnicity = data_manager.get_ethnicity_by_session_id(session_id)
     except Exception as e:
         logging.error(f"An error occurred while loading the data: {e}")
-        return None, None, None, None, None
+        raise DataLoadingError("Failed to load data") from e
     return df_officer, df_driver, df_scene, df_rt, ethnicity
 
 
@@ -106,6 +110,12 @@ def render_analysis_template(base64_png, session_id, ethnicity):
 
 
 def chart_render_seaborn_chart(session_id, dimension):
-    df_officer, df_driver, df_scene, df_rt, ethnicity = load_data(session_id)
+    try:
+        df_officer, df_driver, df_scene, df_rt, ethnicity \
+            = load_data(session_id)
+    except DataLoadingError:
+        return render_template('analyze_session.html',
+                               error='Failed to load data')
+
     base64_png = create_plot(df_officer, df_driver, df_scene, df_rt, dimension)
     return render_analysis_template(base64_png, session_id, ethnicity)
