@@ -33,6 +33,24 @@ def load_data(session_id):
     return df_officer, df_driver, df_scene, df_rt, ethnicity
 
 
+def create_legend(officer_line, driver_line, scatter):
+    # Create legend for the lines
+    line_legend = [officer_line.lines[1], driver_line.lines[2]]
+
+    # Create legend for the scatter plot
+    scatter_legend = [plt.Line2D([0], [0], marker='o', color='w',
+                                 markerfacecolor=COLOR_PALETTE[2], 
+                                 markersize=6)]
+
+    # Combine the legends
+    legend_handles = line_legend + scatter_legend
+    legend_labels = ['Officer', 'Driver', 'Responses']
+
+    # Add the combined legend to the plot
+    plt.legend(handles=legend_handles, labels=legend_labels, loc='best',
+               frameon=False, prop={'family': 'Arial Narrow', 'size': 10})
+
+
 def create_plot(df_officer, df_driver, df_scene, df_rt, dimension):
     plt.figure(figsize=(15, 5))
 
@@ -59,6 +77,8 @@ def create_plot(df_officer, df_driver, df_scene, df_rt, dimension):
     # Add the scatter plot on top of the line plot
     scatter = plt.scatter(df_rt['reaction_t'], response_dimension,
                           c=COLOR_PALETTE[2], s=10, zorder=10)
+
+    create_legend(officer_line, driver_line, scatter)
 
     # Create legend for the lines
     line_legend = [officer_line.lines[1], driver_line.lines[2]]
