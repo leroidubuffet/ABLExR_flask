@@ -17,7 +17,7 @@ class DataLoadingError(Exception):
 
 def load_data(session_id):
     try:
-        # Load hume data from csv
+        # Load data from csv
         df_officer = pd.read_csv('datasets/OF_language.csv')
         df_driver = pd.read_csv('datasets/DF_language.csv')
         df_scene = pd.read_csv('datasets/mean_dimensions.csv')
@@ -27,6 +27,9 @@ def load_data(session_id):
 
         # Get the ethnicity from the 'sessions' worksheet
         ethnicity = data_manager.get_ethnicity_by_session_id(session_id)
+    except FileNotFoundError as e:
+        logging.error(f"File not found: {e}")
+        raise DataLoadingError("Failed to load data - file not found") from e
     except Exception as e:
         logging.error(f"An error occurred while loading the data: {e}")
         raise DataLoadingError("Failed to load data") from e
