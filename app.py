@@ -73,7 +73,7 @@ def new_session():
 		if user_session_id and user_session_id.isdigit() and len(user_session_id) <= 3 and race_digit is not None:
 			session_id = race_digit + user_session_id.zfill(3)
 
-			if data_manager.get_wk_by_name(session_id) is not None:
+			if manager.get_wk_by_name(session_id) is not None:
 				error = SESSION_ID_EXISTS
 				return render_template('new_session.html', session_id=session_id, ethnicities=ethnicities, error=error)
 			else:
@@ -94,7 +94,7 @@ def analyze_session():
 		if not validate_session_id(session_id):
 			error = INSERT_FOUR_DIGIT_NUMBER
 		else:
-			session_exists = data_manager.get_wk_by_name(session_id)
+			session_exists = manager.get_wk_by_name(session_id)
 
 			if not session_exists:
 				error = SESSION_ID_NOT_EXIST
@@ -129,7 +129,7 @@ def video_login():
 		if not validate_session_id(session_id):
 			error = INSERT_FOUR_DIGIT_NUMBER
 		else:
-			session_exists = data_manager.get_wk_by_name(session_id)
+			session_exists = manager.get_wk_by_name(session_id)
 
 			if not session_exists:
 				error = SESSION_ID_NOT_EXIST
