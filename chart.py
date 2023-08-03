@@ -83,21 +83,6 @@ def create_plot(df_officer, df_driver, df_scene, df_rt, dimension):
 
     create_legend(officer_line, driver_line, scatter)
 
-    # Create legend for the lines
-    line_legend = [officer_line.lines[1], driver_line.lines[2]]
-
-    # Create legend for the scatter plot
-    scatter_legend = [plt.Line2D([0], [0], marker='o', color='w',
-                      markerfacecolor=COLOR_PALETTE[2], markersize=6)]
-
-    # Combine the legends
-    legend_handles = line_legend + scatter_legend
-    legend_labels = ['Officer', 'Driver', 'Responses']
-
-    # Add the combined legend to the plot
-    plt.legend(handles=legend_handles, labels=legend_labels, loc='best',
-               frameon=False, prop={'family': 'Arial Narrow', 'size': 10})
-
     plt.title(f'Evolution of {dimension} Over Time', fontsize=20,
               fontname='Arial Narrow')
     plt.ylim(0, 1)  # Set y-axis limits to 0 and 1
