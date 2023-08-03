@@ -8,7 +8,7 @@ import io
 import base64
 from flask import render_template
 from google_sheets import data_manager
-from constants import COLOR_PALETTE
+from constants import COLOR_PALETTE, OFFICER_F, DRIVER_F, SCENE_F
 
 
 class DataLoadingError(Exception):
@@ -18,9 +18,9 @@ class DataLoadingError(Exception):
 def load_data(session_id):
     try:
         # Load data from csv
-        df_officer = pd.read_csv('datasets/OF_language.csv')
-        df_driver = pd.read_csv('datasets/DF_language.csv')
-        df_scene = pd.read_csv('datasets/mean_dimensions.csv')
+        df_officer = pd.read_csv(OFFICER_F)
+        df_driver = pd.read_csv(DRIVER_F)
+        df_scene = pd.read_csv(SCENE_F)
 
         # Load reaction times data from the Google Spreadsheet
         df_rt = data_manager.get_rt_data_for_session(session_id)

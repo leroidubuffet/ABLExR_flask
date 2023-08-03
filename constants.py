@@ -18,3 +18,8 @@ SESSION_ID_NOT_EXIST = 'That session ID does not exist. Please try \
     a different ID.'
 SESSION_ID_MUST_BE_DIGIT = 'Session ID must be a 3 digit number.'
 INSERT_FOUR_DIGIT_NUMBER = 'Insert a 4 digit number please.'
+
+# File paths
+OFFICER_F = datasets/OF_language.csv
+DRIVER_F = datasets/DF_language.csv
+SCENE_F = datasets/mean_dimensions.csv
