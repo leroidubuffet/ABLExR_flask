@@ -1,6 +1,7 @@
 import logging
 
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -9,6 +10,8 @@ import base64
 from flask import render_template
 from google_sheets import data_manager
 from constants import COLOR_PALETTE, OFFICER_F, DRIVER_F, SCENE_F
+
+matplotlib.use('agg')
 
 
 class DataLoadingError(Exception):
