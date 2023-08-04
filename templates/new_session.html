@@ -29,7 +29,7 @@
         <h1>{{ session_id }}</h1>
         {% endif %}
         {% if form_submitted %}
-        <a id="nextLink" href="{{ url_for('render_seaborn_chart', session_id=session_id) }}">Go to session analysis</a>
+        <a id="nextLink" href="{{ url_for('analysis.analysis_chart', session_id=session_id) }}">Go to session analysis</a>
         {% endif %}
     </div>
 </body>

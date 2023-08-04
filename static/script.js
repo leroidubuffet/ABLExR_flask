@@ -8,19 +8,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!userHasIntervened) {
             // User did not press the intervene button, save the default value
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/save_responsetime', true);
+            xhr.open('POST', '/trainee/save_responsetime', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     console.log('Default response time saved successfully.');
                     // Redirect to the feedback page after the request has completed
-                    window.location.href = "/feedback"
+                    window.location.href = "/trainee/feedback"
                 }
             };
             xhr.send(JSON.stringify({ timestamp: 180 }));
         }
         else {
-            window.location.href = "/feedback";
+            window.location.href = "/trainee/feedback";
         }
     });
 
@@ -35,7 +35,7 @@ function saveResponsetime(session_id) {
 
     // Send an AJAX request to the server to save the timestamp
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/save_responsetime', true);
+    xhr.open('POST', '/trainee/save_responsetime', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
