@@ -7,7 +7,7 @@
 <body>
 	<div class="container">
 		<h1>Feedback</h1>
-		<form action="{{ url_for('feedback') }}" method="post">
+		<form action="{{ url_for('trainee.feedback') }}" method="post">
 			<label for="feedback">Why have you intervened at that particular point?</label><br>
 			<textarea id="feedback" name="feedback" rows="4" cols="50"></textarea><br>
 			<input type="submit" value="Submit">
