@@ -11,7 +11,7 @@ body {
 	min-width: 1000px;
 	margin-top: var(--top-margin);
     background-color: black; /* Make the background color black */
-    color: rgb(226, 223, 223); /* Make the text color white */
+    color: #e2dfdf; /* Make the text color white */
 }
 
 a:link {
