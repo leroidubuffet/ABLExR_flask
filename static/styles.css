@@ -10,6 +10,16 @@ body {
 	font-family: Arial, sans-serif;
 	min-width: 1000px;
 	margin-top: var(--top-margin);
+    background-color: black; /* Make the background color black */
+    color: rgb(226, 223, 223); /* Make the text color white */
+}
+
+a:link {
+    color: #87CEFA;  /* unvisited links */
+}
+
+a:visited {
+    color: #800080;  /* visited links */
 }
 
 .container {
@@ -26,7 +36,7 @@ h2 {
 }
 
 p.error {
-	color: red;
+	color: rgb(177, 3, 3);
 }
 
 form {
@@ -54,7 +64,7 @@ select {
     top: 0;
     left: 10%;
 	right: 10%;
-    background-color: #f8f9fa;
+    background-color: #000000;
     padding: 10px;
     z-index: 1;
 }

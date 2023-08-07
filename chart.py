@@ -44,7 +44,7 @@ def create_legend(officer_line, driver_line, scatter):
     line_legend = [officer_line.lines[1], driver_line.lines[2]]
 
     # Create legend for the scatter plot
-    scatter_legend = [plt.Line2D([0], [0], marker='o', color='w',
+    scatter_legend = [plt.Line2D([0], [0], marker='o', color='none',
                                  markerfacecolor=COLOR_PALETTE[2], 
                                  markersize=6)]
 
@@ -59,7 +59,7 @@ def create_legend(officer_line, driver_line, scatter):
 
 def create_plot(df_officer, df_driver, df_scene, df_rt, dimension):
     plt.figure(figsize=(15, 5))
-
+    plt.style.use('dark_background')
     plt.xlim(0, 180)  # Set x-axis limits to 0 and 180
 
     # Plot the Scene data
@@ -68,11 +68,13 @@ def create_plot(df_officer, df_driver, df_scene, df_rt, dimension):
 
     # Plot the Officer data
     officer_line = sns.lineplot(data=df_officer, x='BeginTime',
-                                y=dimension, color=COLOR_PALETTE[0])
+                                y=dimension, color=COLOR_PALETTE[0],
+                                linewidth=1)
 
     # Plot the Driver data
     driver_line = sns.lineplot(data=df_driver, x='BeginTime',
-                               y=dimension, color=COLOR_PALETTE[1])
+                               y=dimension, color=COLOR_PALETTE[1], 
+                               linewidth=1)
 
     # Interpolate the dimension value of the scene at the response times
     df_rt['reaction_t'] = pd.to_numeric(df_rt['reaction_t'], errors='coerce')
@@ -90,12 +92,12 @@ def create_plot(df_officer, df_driver, df_scene, df_rt, dimension):
               fontname='Arial Narrow')
     plt.ylim(0, 1)  # Set y-axis limits to 0 and 1
 
-    # Set background color to white
-    plt.gca().set_facecolor('white')
+    # Set background color
+    plt.gca().set_facecolor('black')
 
     # Set tick label font size and style
-    plt.xticks(fontsize=12, fontname='Arial Narrow')
-    plt.yticks(fontsize=12, fontname='Arial Narrow')
+    plt.xticks(fontsize=12, fontname='Arial Narrow', color='white')
+    plt.yticks(fontsize=12, fontname='Arial Narrow', color='white')
 
     # Set axis labels font size and style
     plt.xlabel('Time (s)', fontsize=10, fontname='Arial Narrow')
