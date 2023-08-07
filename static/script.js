@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     player.on('ended', function() {
         if (!userHasIntervened) {
-            // User did not press the intervene button, save the default value
+            // User did not press the intervene button, save a default value of 180 seconds (total video length)
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/trainee/save_responsetime', true);
             xhr.setRequestHeader('Content-Type', 'application/json');
