@@ -12,7 +12,7 @@ ETHNICITY_MAPPING = {
 ETHNICITIES = ['random', 'black', 'latino', 'white']
 
 # Officer, Driver, Scene dots
-COLOR_PALETTE = ["#6497b1", "#ff6f69", "#011f4b"]
+COLOR_PALETTE = ["#6497b1", "#ff6f69", "#e2dfdf"]
 
 # Error messages
 INVALID_PASSWORD = 'Invalid password. Please try again.'
