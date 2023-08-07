@@ -22,7 +22,7 @@ def analyze_session():
             if not session_exists:
                 error = SESSION_ID_NOT_EXIST
             else:
-                return redirect(url_for('trainer.analysis_chart', 
+                return redirect(url_for('analysis.analysis_chart', 
                                         session_id=session_id))        
 
     return render_template('analyze_session.html', error=error)
