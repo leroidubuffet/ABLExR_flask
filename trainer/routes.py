@@ -59,38 +59,3 @@ def new_session():
                            session_id=session_id, 
                            form_submitted=form_submitted,
                            error=error)
-
-
-# @trainer_routes.route('/analyze_session', methods=['GET', 'POST'])
-# def analyze_session():
-#     session_id = None
-#     form_submitted = False
-#     error = None
-
-#     if request.method == 'POST':
-#         form_submitted = True
-#         session_id = request.form['session_id']
-
-#         return redirect((url_for('analysis.render_seaborn_chart', 
-#                                 session_id=session_id)))
-
-#     return render_template('analyze_session.html', error=error)
-
-
-# @trainer_routes.route('/analyze_session', methods=['GET', 'POST'])
-# def analyze_session():
-#     error = None
-#     if request.method == 'POST':
-#         session_id = request.form['session_id']
-
-#         if not validate_session_id(session_id):
-#             error = INSERT_FOUR_DIGIT_NUMBER
-#         else:
-#             session_exists = get_wk_by_name(session_id)
-
-#             if not session_exists:
-#                 error = SESSION_ID_NOT_EXIST
-#             else:
-#                 return redirect(url_for('render_seaborn_chart', session_id=session_id))        
-
-#     return render_template('analyze_session.html', error=error)
