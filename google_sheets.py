@@ -8,32 +8,12 @@ import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
 
 from constants import CREDENTIALS_FILE, DOCUMENT_NAME
-from utils import map_ethnicity, reverse_map_ethnicity
+from utils import reverse_map_ethnicity
 from functools import wraps
 
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
-
-
-def authenticate(CREDENTIALS_FILE):
-    """Authenticate using the provided credentials file"""
-    scope = ["https://spreadsheets.google.com/feeds",
-             "https://www.googleapis.com/auth/spreadsheets",
-             "https://www.googleapis.com/auth/drive.file",
-             "https://www.googleapis.com/auth/drive"]
-
-    creds = ServiceAccountCredentials.from_json_keyfile_name(
-        CREDENTIALS_FILE, scope)
-    return gspread.authorize(creds)
-
-
-# Google Sheets setup
-gc = authenticate(CREDENTIALS_FILE)
-gs = gc.open(DOCUMENT_NAME)		 # open document
-wk_rt = gs.get_worksheet(0) 	 # reaction time worksheet
-wk_s = gs.worksheet('sessions')	 # session worksheet
-wk_f = gs.worksheet('feedback')  # feedback worksheet
 
 
 # Exception handling decorator
@@ -65,11 +45,25 @@ def handle_exceptions(context=""):
     return decorator
 
 
-class GoogleSheetManager:
-    def __init__(self, gs, wk_s, wk_f):
-        self.gs = gs
-        self.wk_s = wk_s
-        self.wk_f = wk_f
+class GoogleSheetsManager:
+    @staticmethod
+    def authenticate(CREDENTIALS_FILE):
+        """Authenticate using the provided credentials file"""
+        scope = ["https://spreadsheets.google.com/feeds",
+                 "https://www.googleapis.com/auth/spreadsheets",
+                 "https://www.googleapis.com/auth/drive.file",
+                 "https://www.googleapis.com/auth/drive"]
+
+        creds = ServiceAccountCredentials.from_json_keyfile_name(
+            CREDENTIALS_FILE, scope)
+        return gspread.authorize(creds)
+
+    def __init__(self):
+        self.gc = self.authenticate(CREDENTIALS_FILE)
+        self.gs = self.gc.open(DOCUMENT_NAME)
+        self.wk_rt = self.gs.get_worksheet(0)  		# reaction time worksheet
+        self.wk_s = self.gs.worksheet('sessions')  	# session worksheet
+        self.wk_f = self.gs.worksheet('feedback')  	# feedback worksheet
 
     @handle_exceptions(context="Getting worksheet by name")
     def get_wk_by_name(self, session_id):
@@ -80,7 +74,7 @@ class GoogleSheetManager:
         wk = self.gs.add_worksheet(str(session_id), rows, cols)
         wk.append_row(["ethnicity", "reaction_t", "timeStamp"])
         return wk
-    
+
     @handle_exceptions(context="Adding session")
     def add_session(self, session_id, session_description):
         ethnicity_code = session_id[0]
@@ -112,7 +106,7 @@ class GoogleSheetManager:
         wk.append_row(record)
 
 
-manager = GoogleSheetManager(gs, wk_s, wk_f)
+manager = GoogleSheetsManager()
 
 
 class GoogleDataRetrieval:
