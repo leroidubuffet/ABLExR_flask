@@ -1,47 +1,43 @@
 var player;
 var userHasIntervened = false;
-
-document.addEventListener('DOMContentLoaded', function() {
+var saveResponseTimeUrl = '/trainee/save_responsetime';
+document.addEventListener('DOMContentLoaded', initializePlayer);
+function initializePlayer() {
     player = videojs('scene-3');
-
-    player.on('ended', function() {
-        if (!userHasIntervened) {
-            // User did not press the intervene button, save a default value of 180 seconds (total video length)
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/trainee/save_responsetime', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log('Default response time saved successfully.');
-                    // Redirect to the feedback page after the request has completed
-                    window.location.href = "/trainee/feedback"
-                }
-            };
-            xhr.send(JSON.stringify({ timestamp: 180 }));
-        }
-        else {
-            window.location.href = "/trainee/feedback";
-        }
-    });
-
+    player.on('ended', handleVideoEnded);
     var interveneButton = document.querySelector('#intervene-button');
     interveneButton.disabled = false;
-});
-
-function saveResponsetime(session_id) {
-    // Get the current timestamp of the video
-    var currentTime = player.currentTime();
-    userHasIntervened = true;
-
-    // Send an AJAX request to the server to save the timestamp
+}
+function handleVideoEnded() {
+    if (!userHasIntervened) {
+        saveResponseTime(180, handleDefaultResponseTimeSaved);
+    } else {
+        redirectToFeedbackPage();
+    }
+}
+function saveResponseTime(timestamp, callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/trainee/save_responsetime', true);
+    xhr.open('POST', saveResponseTimeUrl, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log('Response time saved successfully.');
-        }
-    };
-    xhr.send(JSON.stringify({ timestamp: currentTime, session_id: session_id }));
+            callback();
+} };
+    xhr.send(JSON.stringify({ timestamp: timestamp }));
+}
+function handleDefaultResponseTimeSaved() {
+    console.log('Default response time saved successfully.');
+    redirectToFeedbackPage();
+}
+function redirectToFeedbackPage() {
+    window.location.href = "/trainee/feedback";
+}
+function saveResponsetime(session_id) {
+    var currentTime = player.currentTime();
+    userHasIntervened = true;
+    saveResponseTime(currentTime, handleResponseTimeSaved);
     document.getElementById('intervene-button').disabled = true;
+}
+function handleResponseTimeSaved() {
+    console.log('Response time saved successfully.');
 }
