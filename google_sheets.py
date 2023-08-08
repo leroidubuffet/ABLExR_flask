@@ -65,6 +65,17 @@ class GoogleSheetsManager:
         self.wk_s = self.gs.worksheet('sessions')  	# session worksheet
         self.wk_f = self.gs.worksheet('feedback')  	# feedback worksheet
 
+    def _get_or_create_worksheet(self, session_id: str):
+        wk = self.get_wk_by_name(session_id)
+        if wk is None:
+            wk = self.create_session_wk(session_id)
+        return wk
+
+    def _get_ethnicity(self, session_id: str):
+        session_id = str(session_id)
+        ethnicity_code = session_id[0]
+        return reverse_map_ethnicity(ethnicity_code)
+
     @handle_exceptions(context="Getting worksheet by name")
     def get_wk_by_name(self, session_id):
         return self.gs.worksheet(session_id)
@@ -92,17 +103,11 @@ class GoogleSheetsManager:
     
     @handle_exceptions(context="Adding record")
     def add_record(self, session_id, reaction_t):
-        session_id = str(session_id)
-        ethnicity_code = session_id[0]
-        ethnicity = reverse_map_ethnicity(ethnicity_code)
+        ethnicity = self._get_ethnicity(session_id)
         now = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
         record = [ethnicity, reaction_t, now]
     
-        wk = self.get_wk_by_name(session_id)
-    
-        if wk is None:
-            wk = self.create_session_wk(session_id)
-    
+        wk = self._get_or_create_worksheet(session_id)
         wk.append_row(record)
 
 
@@ -115,8 +120,8 @@ class GoogleDataRetrieval:
 
     @handle_exceptions(context="Getting ethnicity")
     def get_ethnicity_by_session_id(self, session_id):
-        worksheet = self.manager.get_wk_by_name('sessions')
         session_id = str(session_id)
+        worksheet = self.manager.get_wk_by_name('sessions')
         matching_cells = worksheet.findall(session_id)
         cell = matching_cells[0]
         row = worksheet.row_values(cell.row)
@@ -125,7 +130,7 @@ class GoogleDataRetrieval:
 
     @handle_exceptions(context="Getting response time data")
     def get_rt_data_for_session(self, session_id):
-        wk = self.manager.get_wk_by_name(session_id)
+        wk = self.manager._get_or_create_worksheet(session_id)
 
         if wk is None:
             return pd.DataFrame(columns=[
@@ -143,6 +148,6 @@ class GoogleDataRetrieval:
                 'ethnicity',
                 'reaction_t',
                 'timeStamp'])
-        
+
 
 data_manager = GoogleDataRetrieval(manager)
