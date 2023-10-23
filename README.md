@@ -70,8 +70,8 @@ The resulting file must be named `mean_dimensions.csv` and placed into /datasets
 
 ## Instalation
 
-- Clone the repo: `git clone https://github.com/leroidubuffet/ABLExR_flask`
-- Change into the directory: `cd ABLExR-Trainer`
+- Clone the repo: `git clone https://github.com/leroidubuffet/TRAINxR_flask`
+- Change into the directory: `cd TRAINxR_flask`
 - Run the Flask app: `python app.py` or `flask --app app.py --debug run`
 
 ### Prerequisites
@@ -96,4 +96,3 @@ You can install the necessary python packages with pip:
 - Visit http://localhost:5000 in your web browser to view the app.
 - Use the trainer dashboard to create new sessions and view session data.
 - As a trainee, you can join a session, watch the training video, and submit feedback.
-

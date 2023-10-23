@@ -1,6 +1,6 @@
 # Google sheets authentication
 CREDENTIALS_FILE = 'credentials.json'
-DOCUMENT_NAME = 'ABLExR-DATA'
+DOCUMENT_NAME = 'TRAINxR-DATA'
 
 # Ethnicities
 ETHNICITY_MAPPING = {
