@@ -16,18 +16,25 @@ The TRAINxR Trainer Application is fully functional prototype of a web-based tra
 
 OOP basics:
 - Objects, classes, inheritance, methods, attributes, constructors, polymorphism, encapsulation, and abstraction.
+
 Flask:
 - Classes, inheritance, methods, order of methods, virtual functions, file organization, and secure credentials handling.
+
 Python:
 - Docstrings, exception handling, Flake8, and import order.
+
 JavaScript:
 - Basic syntax and concepts.
+
 Data visualization and ETL:
 - Matplotlib and Seaborn.
+
 MySQL and MariaDB:
 - Basic SQL queries, connecting to a database, and creating and managing tables.
+
 Google Sheets:
 - Using Google Sheets to store and manage data.
+
 Other:
 - Constants, functions in different files, and Git: conventional commits, branching.
 
