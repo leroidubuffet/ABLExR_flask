@@ -72,6 +72,9 @@ The resulting file must be named `mean_dimensions.csv` and placed into /datasets
 
 - Clone the repo: `git clone https://github.com/leroidubuffet/TRAINxR_flask`
 - Change into the directory: `cd TRAINxR_flask`
+- Create a google sheets file to hold the application data
+- Create a [Google Cloud](cloud.google.com) Project
+- Create your own Google Cloud Service Account Authentication keys and save them into `credentials.json´ 
 - Run the Flask app: `python app.py` or `flask --app app.py --debug run`
 
 ### Prerequisites
