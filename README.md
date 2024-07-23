@@ -2,7 +2,7 @@
 
 For anonimization purposes, all names and contents of the application  are anonymized, and the training videos have been removed or changed with examples.
 
-The TRAINxR Trainer Application is fully functional prototype of a web-based training tool that allows trainers to create and manage training sessions. Trainees can join these sessions, watch a training video, and submit feedback. The application is built using Flask and integrates with Google Sheets for data storage.
+The TRAINxR Trainer Application is a fully functional prototype of a web-based training tool that allows trainers to create and manage training sessions. Trainees can join these sessions, watch a training video, and submit feedback. The application is built using Flask and integrates with Google Sheets for data storage.
 
 ## Features
 
